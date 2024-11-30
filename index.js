@@ -2,13 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./db');
-const usersRouter = require('./routes/users');
-const projectsRouter = require('./routes/projects');
-const tasksRouter = require('./routes/tasks');
-const teamsRouter = require('./routes/teams');
 const authRouter = require('./routes/auth');
-const korisniciRouter = require('./routes/korisnici'); // Dodato
-const messagesRouter = require('./routes/messages');
+const korisniciRouter = require('./routes/korisnici'); 
+const proizvodiRouter = require('./routes/proizvodi');
+const transkacijeRouter = require('./routes/transakcije');
+const popustiRouter = require('./routes/popusti');
 
 
 const app = express();
@@ -24,14 +22,17 @@ db.connect((err) => {
     console.log('Connected to MySQL database');
 });
 
+app.use('/uploads', express.static('uploads'));
+
+
+
 // Routes
-app.use('/api/users', usersRouter);
-app.use('/api/projekti', projectsRouter);
-app.use('/api/tasks', tasksRouter);
-app.use('/api/teams', teamsRouter);
 app.use('/api/auth', authRouter);
-app.use('/api/korisnici', korisniciRouter); // Dodato
-app.use('/api/messages', messagesRouter);
+app.use('/api/korisnici', korisniciRouter);
+app.use('/api/proizvodi', proizvodiRouter);
+app.use('/api/transakcije', transkacijeRouter);
+app.use('/api/popusti', popustiRouter);
+
 
 
 // Start server

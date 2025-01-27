@@ -1,4 +1,3 @@
-// src/FinalizacijaNarudzbine.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -40,44 +39,63 @@ const FinalizacijaNarudzbine = ({ isprazniKorpu }) => {
     const handleZavrsiNarudzbinu = async () => {
         try {
             const { ime, prezime, email, adresa, telefon, datum_transakcije, proizvodi } = transakcijaData;
-
+    
             if (!ime || !prezime || !email || !adresa || !telefon || !datum_transakcije || !proizvodi) {
                 throw new Error('Neka obavezna polja nedostaju');
             }
-
+    
             const formattedDate = new Date(datum_transakcije).toISOString().slice(0, 19).replace('T', ' ');
-
+    
             const dataToSend = {
                 ...transakcijaData,
                 datum_transakcije: formattedDate,
             };
-
-            // Send transaction data
+    
+            // Pošalji podatke transakcije
             await axios.post('http://localhost:5000/api/transakcije', dataToSend);
-            
-            // Update product quantities
+    
+            // Ažuriraj količine proizvoda
             for (const proizvod of proizvodi) {
-                await axios.put(`http://localhost:5000/api/proizvodi/${proizvod.id}`, {
-                    kolicina: proizvod.dostupnaKolicina - proizvod.kolicina // Ensure this matches your server logic
-                });
+                try {
+                    const response = await axios.get(`http://localhost:5000/api/proizvodi/${proizvod.id}`);
+                    const trenutnaKolicina = response.data.kolicina;
+    
+                    if (trenutnaKolicina !== undefined) {
+                        // Proveri da li je količina dovoljna
+                        if (trenutnaKolicina < proizvod.kolicina) {
+                            throw new Error(`Nema dovoljno zaliha za proizvod ID: ${proizvod.id}`);
+                        }
+    
+                        await axios.put(`http://localhost:5000/api/proizvodi/${proizvod.id}`, {
+                            kolicina: trenutnaKolicina - proizvod.kolicina
+                        });
+                    } else {
+                        throw new Error(`Proizvod sa ID: ${proizvod.id} ne postoji.`);
+                    }
+                } catch (err) {
+                    console.error(`Greška pri ažuriranju količine za proizvod ID: ${proizvod.id}`, err);
+                    throw new Error('Došlo je do greške prilikom ažuriranja količine proizvoda.');
+                }
             }
-
-            // Success: Clear the cart and show the modal
-            isprazniKorpu(); // Clear the cart
+    
+            // Uspeh: Isprazni korpu i prikaži modal uspeha
+            if (typeof isprazniKorpu === 'function') {
+                isprazniKorpu(); 
+            }
             setModalMessage("Uspešno ste završili kupovinu!");
             setShowModal(true);
-            
-
+    
         } catch (error) {
-            console.error('Greška pri slanju podataka:', error.response ? error.response.data : error.message);
+            console.error('Greška pri završavanju narudžbine:', error);
             setModalMessage("Došlo je do greške prilikom kupovine.");
             setShowModal(true);
         }
     };
+    
 
     const handleCloseModal = () => {
         setShowModal(false);
-        navigate('/'); // Redirect to homepage
+        navigate('/'); // Preusmeri na početnu stranicu
     };
 
     if (loading) {

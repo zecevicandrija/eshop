@@ -1,110 +1,132 @@
-/* Navbar.css */
-
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 30px; /* Dodao sam padding kako bi My E-Shop bio dalje od ivice */
-  border-bottom: 1px solid #ddd;
-  background-color: #fff;
-  max-width: 1200px;
-  margin: 10px auto;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-  font-family: "Bai Jamjuree", sans-serif;
-
+  width: 100%;
+  background-color: #121212;
+  position: fixed; /* Ako želiš da je fiksiran pri vrhu */
+  top: 0;
+  left: 0;
+  z-index: 9999;
 }
 
+.navbar-content {
+  /* Fleks raspored: logo (levo), nav-links (sredina), user-actions (desno) */
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding: 0 20px;
+}
+
+/* Logo (levo) */
 .logo {
-  font-size: 26px;
-  font-weight: bold;
-  color: #007bff;
-  margin-left: 20px; /* Razmak između logotipa i navigacije */
-}
-
-.nav {
+  /* Ne moraš da stavljaš flex: 1 ako želiš da bude minimalna širina. */
   display: flex;
   align-items: center;
-  position: relative;
 }
 
-.nav ul {
-  list-style-type: none;
+.logo-icon {
+  color: #ff6600;
+  margin-right: 5px;
+  font-size: 1.2rem;
+}
+
+.logo-text {
+  font-weight: bold;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.logo-text-orange {
+  color: #ff6600;
+}
+
+/* Linkovi (sredina) */
+.nav-links {
+  flex: 1; /* Ovo "širi" nav-links da bi mogli da se centriraju */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; /* Zbog mobilnog menija ako se koristi absolute */
+}
+
+.nav-links ul {
+  display: flex;
+  gap: 20px;
+  list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  gap: 20px; /* Razmak između linkova */
 }
 
-.nav li {
-  margin: auto;
-}
-
-.nav a {
-  text-decoration: none;
-  color: #333;
-  padding: 10px;
-}
-
-.nav a:hover {
-  color: #007bff; /* Jednostavan hover efekat */
-}
-
-.logout-button {
-  background: #dc3545;
+.nav-links ul li a {
   color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-links ul li a:hover {
+  color: #ff6600;
+}
+
+/* Ikonice (desno) */
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Korpa i profil ikonica */
+.cart-button,
+.profile-button {
+  background: none;
   border: none;
-  padding: 8px 15px;
-  border-radius: 4px;
+  color: #ffffff;
+  font-size: 24px;
+  position: relative;
   cursor: pointer;
-  font-size: 16px;
-  margin-right: 20px;
 }
 
-.logout-button:hover {
-  background-color: #c82333; /* Jednostavan hover efekat */
+.cart-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-color: #ff6600;
+  border-radius: 50%;
 }
 
-/* Stilovi za manje ekrane */
+/* Hamburger dugme */
+.menu-toggle {
+  display: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #fff;
+}
+
+/* Mobilni prikaz */
 @media (max-width: 768px) {
-  .nav {
-      flex-direction: column;
-      align-items: flex-start;
-  }
-
-  .nav ul {
-      display: none;
-      flex-direction: column;
-      width: 100%;
-      padding: 0;
-      background-color: #fff;
-      border-top: 1px solid #ddd;
-      margin-top: 10px;
-  }
-
-  .nav.active ul {
-      display: flex;
-  }
-
-  .nav li {
-      margin: 0;
-      margin-bottom: 10px;
-  }
-
-  .nav a {
-      font-size: 18px;
-  }
-
+  /* Hamburger postaje vidljiv */
   .menu-toggle {
-      display: block;
-      cursor: pointer;
-      font-size: 24px;
+    display: block;
   }
-}
 
-/* Sakrij hamburger meni za veće ekrane */
-@media (min-width: 769px) {
-  .menu-toggle {
-      display: none;
+  /* Skrivamo linkove dok se ne klikne hamburger */
+  .nav-links {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    background-color: #121212;
+    width: 100%;
+    display: none; 
+    justify-content: center; /* centriraj unutar mobilnog menija */
+    padding: 20px 0;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  /* Nav linkovi se ređaju vertikalno */
+  .nav-links ul {
+    flex-direction: column;
+    gap: 15px;
   }
 }

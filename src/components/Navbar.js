@@ -13,9 +13,20 @@ const Navbar = () => {
 
   return (
     <header className="navbar">
-      <div className="logo">My E-Shop</div>
-      <div className={`nav ${isNavActive ? 'active' : ''}`}>
-        <nav>
+      <div className="navbar-content">
+        
+        {/* Logo (levo) */}
+        <div className="logo">
+          <Link to="/">
+            <span className="logo-icon">▶</span>
+            <span className="logo-text">
+              Balkan<span className="logo-text-orange">Keys</span>
+            </span>
+          </Link>
+        </div>
+
+        {/* Glavni linkovi (u sredini) */}
+        <div className={`nav-links ${isNavActive ? 'active' : ''}`}>
           <ul>
             <li><Link to="/">Početna</Link></li>
             <li><Link to="/proizvodi">Proizvodi</Link></li>
@@ -35,16 +46,33 @@ const Navbar = () => {
                 <li><Link to="/signup">Signup</Link></li>
               </>
             ) : (
-              <li><button onClick={logout} className="logout-button">Logout</button></li>
+              <li>
+                <button onClick={logout} className="logout-button">
+                  Logout
+                </button>
+              </li>
             )}
           </ul>
-        </nav>
-        <div className="menu-toggle" onClick={toggleNav}>
-          &#9776; {/* Hamburger icon */}
+        </div>
+
+        {/* Ikonice (desno) */}
+        <div className="user-actions">
+          {/* Cart ikonica */}
+          <Link to="/korpa" className="cart-button">
+            <span className="cart-icon">🛒</span>
+            <span className="cart-dot"></span>
+          </Link>
+          {/* Profil ikonica */}
+          <button className="profile-button">👤</button>
+
+          {/* Hamburger (za mobilni prikaz) */}
+          <div className="menu-toggle" onClick={toggleNav}>
+            &#9776;
+          </div>
         </div>
       </div>
     </header>
   );
-}
+};
 
 export default Navbar;

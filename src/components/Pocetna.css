@@ -1,75 +1,452 @@
-.pocetna-container {
-    color: #333;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-    font-family: "Bai Jamjuree", sans-serif;
+/* Global Styles */
+body {
+  color: #ffffff; /* White text */
+  font-family: "Bai Jamjuree", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.pocetna {
+  background-color: #282828;
+  height: 100vh;
+}
+
+/* Header Styles */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo-icon {
+  color: #ff6600; /* Orange */
+  margin-right: 5px;
+}
+
+.logo-text {
+  font-weight: bold;
+}
+
+.logo-text-orange {
+  color: #ff6600;
+}
+
+.navigation {
+  display: flex;
+  gap: 20px;
+}
+
+.navigation a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.navigation a:hover {
+  text-decoration: underline;
+  color: #ff6600;
+}
+
+.platform-filters {
+  display: flex;
+  gap: 10px;
+}
+
+.platform-button {
+  background-color: #333333;
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.platform-button.active {
+  background-color: #ff6600;
+}
+
+.user-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.cart-button, .profile-button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 24px;
+  position: relative;
+  cursor: pointer;
+}
+
+.cart-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-color: #ff6600;
+  border-radius: 50%;
+}
+
+/* Hero Banner Styles */
+.hero-banner {
+  position: relative;
+  height: 50vh;
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+}
+
+.hero-image {
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(0,0,0,0.7), transparent);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 50px;
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: bold;
+  color: white;
+}
+
+.hero-price {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.discount-badge {
+  background-color: #ff6600;
+  color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.price {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+}
+
+/* Trending Section Styles */
+.trending {
+  padding: 40px 20px;
+  width: 100%;
+}
+
+.trending-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 30px;
+  padding-left: 20px;
+  color: white;
+}
+
+.arrow {
+  color: #ff6600;
+}
+
+.game-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.game-card {
+  width: 350px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.game-image {
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+}
+
+.game-image:hover .image-hover {
+  scale: 1.2;
+}
+
+.image-hover {
+  position: absolute;
+  top: 40px;
+  right: -10px; /* Postavi skroz desno */
+  width: 150px;
+  height: 150px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: 0.5s;
+  z-index: 9999;
+}
+
+.image-hover:hover {
+  scale: 1.1;
+}
+
+.game-info {
+  margin-top: 10px;
+}
+
+.game-title {
+  font-size: 16px;
+  margin-top: 10px;
+  color: white;
+}
+
+.game-price {
+  font-weight: bold;
+  color: white;
+}
+
+.game-dlc {
+  color: #ff6600;
+  margin-left: 5px;
+}
+
+/* Dodaj ove medija upite na kraj CSS fajla */
+/* Features & Trust Section */
+.features-trust {
+  padding: 40px 20px;
+  background: #1A1A1A;
+}
+
+.features-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.feature-card {
+  background: #282828;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid #383838;
+}
+
+.feature-card h3 {
+  color: #FF6600;
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+.feature-card p {
+  color: #FFFFFF;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+/* Trustpilot Section */
+.trustpilot-wrapper {
+  margin-top: 40px;
+}
+
+.trustpilot-card {
+  background: #282828;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #383838;
+}
+
+.trustpilot-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.stars {
+  color: #FFD700;
+  font-size: 1.8rem;
+}
+
+.trustpilot-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.trustscore {
+  color: #FFFFFF;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.reviews {
+  color: #AAAAAA;
+  font-size: 0.9rem;
+}
+
+.trustpilot-logo {
+  height: 30px;
+  filter: brightness(0) invert(1);
+}
+
+/* Tablet breakpoint */
+@media (max-width: 1024px) {
+  .hero-banner {
+    height: 40vh;
   }
-  
-  
-  
-  .hero-section {
-    text-align: center;
-    padding: 100px 20px;
-    background-color: #f8f9fa;
-  }
-  
-  .hero-section h1 {
-    font-size: 48px;
-    margin-bottom: 20px;
-  }
-  
-  .hero-section p {
-    font-size: 18px;
-    margin-bottom: 40px;
-  }
-  
-  .shop-now-btn {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-  }
-  
-  .shop-now-btn:hover {
-    background-color: #0056b3;
-  }
-  
-  .featured-products {
-    padding: 60px 20px;
-    text-align: center;
-  }
-  
-  .featured-products h2 {
+
+  .hero-title {
     font-size: 36px;
-    margin-bottom: 40px;
   }
-  
-  .product-list {
+
+  .price {
+    font-size: 20px;
+  }
+
+  .game-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .game-card {
+    width: 100%;
+  }
+
+  .hero-overlay {
+    padding-left: 30px;
+  }
+}
+
+/* Mobile breakpoint */
+/* Trending Section Styles */
+.trending {
+  padding: 40px 20px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.game-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  transition: transform 0.3s ease;
+}
+
+/* Mobile Carousel Styles */
+@media (max-width: 768px) {
+  .game-list {
     display: flex;
-    justify-content: space-around;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    gap: 15px;
+    padding-bottom: 10px;
+    margin: 0 -20px;
+    width: calc(100% + 40px);
   }
-  
-  .product-item {
-    background-color: #fff;
-    padding: 20px;
-    width: 30%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
+
+  .game-list::-webkit-scrollbar {
+    display: none;
   }
-  
-  .product-item:hover {
-    transform: scale(1.05);
+
+  .game-card {
+    flex: 0 0 85%;
+    min-width: 85%;
+    margin: 0 10px;
+    transform: scale(0.98);
+    transition: transform 0.2s ease;
   }
-  
-  .footer {
+
+  .game-card:first-child {
+    margin-left: 20px;
+  }
+
+  .game-card:last-child {
+    margin-right: 20px;
+  }
+
+  .game-card.active {
+    transform: scale(1);
+  }
+
+  .features-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 20px;
+    margin: 0 -20px;
+    width: calc(100% + 40px);
+  }
+
+  .features-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .feature-card {
+    flex: 0 0 85%;
+    margin: 0 20px;
+    min-width: 85%;
+  }
+
+  .trustpilot-card {
+    flex-direction: column;
+    gap: 20px;
     text-align: center;
-    padding: 20px 0;
-    background-color: #f8f9fa;
-    margin-top: 40px;
+  }
+
+  .trustpilot-content {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .feature-card {
+    padding: 20px;
   }
   
+  .feature-card h3 {
+    font-size: 1.2rem;
+  }
+  
+  .feature-card p {
+    font-size: 0.9rem;
+  }
+  
+  .stars {
+    font-size: 1.5rem;
+  }
+}

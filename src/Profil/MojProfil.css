@@ -1,0 +1,321 @@
+/* Osnovni stilovi */
+.profile-page {
+    background: linear-gradient(to bottom, #121212, #1e1e1e);
+    color: #ffffff;
+    font-family: "Roboto", sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Header */
+  .profile-header {
+    background-color: #1e1e1e;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  }
+  
+  .profile-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .profile-picture {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #00ff00;
+    margin-right: 20px;
+  }
+  
+  .user-info h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #00ff00;
+  }
+  
+  .user-info p {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+  }
+  
+  .user-info svg {
+    margin-right: 10px;
+    color: #00ff00;
+  }
+  
+  .logout-button {
+    background-color: #ff0000;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .logout-button:hover {
+    background-color: #cc0000;
+  }
+  
+  /* Navigacija */
+  .profile-nav {
+    background-color: #1e1e1e;
+    width: 250px;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    overflow-y: auto;
+  }
+  
+  .profile-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .profile-nav li {
+    margin-bottom: 15px;
+  }
+  
+  .profile-nav a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .profile-nav a svg {
+    margin-right: 10px;
+    color: #00ff00;
+  }
+  
+  .profile-nav a:hover,
+  .profile-nav a.active {
+    background-color: #00ff00;
+    color: #121212;
+  }
+  
+  .profile-nav a:hover svg,
+  .profile-nav a.active svg {
+    color: #121212;
+  }
+  
+  /* Glavni sadržaj */
+  .profile-content {
+    flex: 1;
+    margin-left: 250px;
+    padding: 20px;
+    max-width: calc(100% - 250px);
+  }
+  
+  .section {
+    background-color: #1e1e1e;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .section h2 {
+    color: #00ff00;
+    font-size: 26px;
+    margin-bottom: 20px;
+  }
+  
+  /* Specifični stilovi za sekcije */
+  .search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .search-bar input {
+    flex: 1;
+    padding: 10px;
+    background-color: #2a2a2a;
+    border: none;
+    color: #ffffff;
+    border-radius: 5px;
+  }
+  
+  .search-bar button,
+  .details-button,
+  .new-ticket-button {
+    background-color: #00b7ff;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .keys-list,
+  .orders-list,
+  .reviews-list,
+  .tickets-list,
+  .wishlist-list,
+  .achievements-list,
+  .friends-list,
+  .notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .key-item,
+  .order-item,
+  .review-item,
+  .ticket-item,
+  .wishlist-item,
+  .achievement-item,
+  .friend-item,
+  .notification-item {
+    background-color: #2a2a2a;
+    padding: 15px;
+    border-radius: 5px;
+  }
+  
+  .wishlist-item,
+  .friend-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .wishlist-item img,
+  .friend-item img {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+  }
+  
+  .achievement-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .achievement-icon {
+    font-size: 24px;
+    color: #ffd700;
+  }
+  
+  .achievement-item.locked .achievement-icon {
+    color: #555555;
+  }
+  
+  .notification-item.unread {
+    border-left: 4px solid #00ff00;
+  }
+  
+  .review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .review-form textarea {
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    resize: vertical;
+  }
+
+  /* MojProfil.css */
+.review-item {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.review-product-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.review-date {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.review-text {
+  margin-top: 10px;
+  color: white;
+}
+  
+  .settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .settings-form label {
+    margin-bottom: 5px;
+  }
+  
+  .settings-form input {
+    padding: 10px;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  /* Responsive dizajn */
+
+  @media (min-width: 768px) {
+    .profile-nav {
+        margin-top: 100px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .profile-nav {
+      position: static;
+      width: 100%;
+    }
+  
+    .profile-content {
+      margin-left: 0;
+      max-width: 100%;
+    }
+  
+    .profile-header-inner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+  
+    .profile-nav ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  
+    .profile-nav li {
+      margin-bottom: 0;
+    }
+  }

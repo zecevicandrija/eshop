@@ -2,23 +2,27 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Proizvodi.css";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
 
-const Tabela = ({ dodajUKorpu, ukloniIzKorpe }) => {
+const Proizvodi = ({ dodajUKorpu, ukloniIzKorpe }) => {
   const [proizvodi, setProizvodi] = useState([]);
   const [korpaProizvodi, setKorpaProizvodi] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [selectedCategory, setSelectedCategory] = useState("Sve");
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProizvodi = async () => {
       try {
+        setLoading(true);
         const response = await axios.get("http://localhost:5000/api/proizvodi");
         const filtriraniProizvodi = response.data.filter(proizvod => proizvod.kolicina > 0);
         setProizvodi(filtriraniProizvodi);
+        setLoading(false);
       } catch (error) {
         console.error("Greška prilikom preuzimanja proizvoda:", error);
+        setLoading(false);
       }
     };
 
@@ -45,85 +49,133 @@ const Tabela = ({ dodajUKorpu, ukloniIzKorpe }) => {
     return sortOrder === "asc" ? a.cena - b.cena : b.cena - a.cena;
   });
 
-  const filtriraniProizvodi = sortiraniProizvodi.filter(proizvod =>
-    proizvod.ime.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const categories = ['Sve', ...new Set(proizvodi.map(proizvod => proizvod.kategorija || 'Ostalo'))];
+
+  const filtriraniProizvodi = sortiraniProizvodi.filter(proizvod => {
+    const matchesSearch = proizvod.ime.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         proizvod.opis.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'Sve' || proizvod.kategorija === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="proizvodi-container">
-      <input
-        type="text"
-        placeholder="Pretraži proizvode..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="proizvodi-pretraga"
-      />
+      
+      <header className="proizvodi-header">
+        <h1 className="proizvodi-title">Naši Proizvodi</h1>
+        <p className="proizvodi-subtitle">Pronađite najbolje proizvode po najpovoljnijim cenama</p>
+      </header>
 
-      <div className="sortiranje-container">
-        <button onClick={() => setSortOrder("asc")} className="sortiraj-btn">
-          Cena ↓↑
-        </button>
-        <button onClick={() => setSortOrder("desc")} className="sortiraj-btn">
-          Cena ↑↓
-        </button>
-      </div>
+      <div className="search-filter-container">
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="Pretraži proizvode..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <i className="fas fa-search"></i>
+        </div>
 
-      <div className="proizvodi-lista">
-        {filtriraniProizvodi.length > 0 ? (
-          filtriraniProizvodi.map((proizvod, index) => (
-            <div key={index} className="proizvod-kartica">
-              <h3 className="proizvod-ime">{proizvod.ime}</h3>
-              <img
-                src={proizvod.slika ? `http://localhost:5000/uploads/${proizvod.slika}` : 'default-image.png'}
-                alt={proizvod.ime}
-                className="proizvod-slika"
-              />
-              <p className="proizvod-opis">{proizvod.opis}</p>
-              <p className="proizvod-cena">{proizvod.cena} RSD</p>
-              <button
-                onClick={() => handleViseOProizvodu(proizvod)}
-                className="proizvod-vise-btn"
-              >
-                Više o proizvodu
-              </button>
-              {isProizvodUKorpi(proizvod.id) ? (
-                <button
-                  onClick={() => handleIzbaciIzKorpe(proizvod)}
-                  className="proizvod-izbaci-btn"
-                >
-                  Izbaci iz korpe
-                </button>
-              ) : (
-                <button
-                  onClick={() => handleDodajUKorpu(proizvod)}
-                  className="proizvod-dodaj-btn"
-                >
-                  Dodaj u korpu
-                </button>
-              )}
-            </div>
-          ))
-        ) : (
-          <p>Nema dostupnih proizvoda.</p>
-        )}
-      </div>
-
-      {/* Korpa prikaz */}
-      <div className="korpa-container-proizvod">
-        <h5>Vaša korpa</h5>
-        <ul>
-          {korpaProizvodi.map((proizvod, index) => (
-            <li key={index}>
-              {proizvod.ime} - {proizvod.cena} RSD
-            </li>
+        <div className="category-filter">
+          {categories.map(category => (
+            <button
+              key={category}
+              className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
+              onClick={() => setSelectedCategory(category)}
+            >
+              {category}
+            </button>
           ))}
-        </ul>
-        <button onClick={() => navigate("/korpa")} className="idi-u-korpu-btn">
-          Idi u korpu
-        </button>
+        </div>
+
+        <div className="sortiranje-container">
+          <button 
+            onClick={() => setSortOrder("asc")} 
+            className={`sortiraj-btn ${sortOrder === 'asc' ? 'active' : ''}`}
+          >
+            Cena ↓↑
+          </button>
+          <button 
+            onClick={() => setSortOrder("desc")} 
+            className={`sortiraj-btn ${sortOrder === 'desc' ? 'active' : ''}`}
+          >
+            Cena ↑↓
+          </button>
+        </div>
       </div>
+
+      {loading ? (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Učitavanje proizvoda...</p>
+        </div>
+      ) : (
+        <div className="products-grid">
+          {filtriraniProizvodi.length > 0 ? (
+            filtriraniProizvodi.map((proizvod) => (
+              <div 
+                key={proizvod.id} 
+                className={`product-card ${isProizvodUKorpi(proizvod.id) ? 'in-cart' : ''}`}
+              >
+                <div className="product-image-container">
+                  <img 
+                    src={proizvod.slika || 'default-image.png'} 
+                    alt={proizvod.ime} 
+                    className="product-image"
+                    onError={(e) => (e.target.src = 'default-image.png')}
+                  />
+                </div>
+                <div className="product-info">
+                  <h3 className="product-name">{proizvod.ime}</h3>
+                  <p className="product-description">{proizvod.opis}</p>
+                  <div className="product-price-container">
+                    <span className="product-price">{proizvod.cena} RSD</span>
+                  </div>
+                  <div className="product-actions">
+                    <button
+                      onClick={() => handleViseOProizvodu(proizvod)}
+                      className="proizvod-vise-btn"
+                    >
+                      <i className="fas fa-info-circle"></i> Detalji
+                    </button>
+                    {isProizvodUKorpi(proizvod.id) ? (
+                      <button
+                        onClick={() => handleIzbaciIzKorpe(proizvod)}
+                        className="proizvod-izbaci-btn"
+                      >
+                        <i className="fas fa-trash-alt"></i> Izbaci
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleDodajUKorpu(proizvod)}
+                        className="proizvod-dodaj-btn"
+                      >
+                        <i className="fas fa-cart-plus"></i> Dodaj
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="no-results">
+              <i className="fas fa-exclamation-circle"></i>
+              <p>Nema rezultata za vašu pretragu</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Floating cart button */}
+      {korpaProizvodi.length > 0 && (
+        <div className="floating-cart-btn" onClick={() => navigate("/korpa")}>
+          <i className="fas fa-shopping-cart"></i>
+          <span className="cart-count">{korpaProizvodi.length}</span>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Tabela;
+export default Proizvodi;

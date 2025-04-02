@@ -1,218 +1,446 @@
-/* Proizvodi.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
+
 
 .proizvodi-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 40px 20px;
-  background-color: #f8f9fa;
-  font-family: "Bai Jamjuree", sans-serif;
+  padding: 2rem;
+  --primary-color: #00a8ff;
+  --secondary-color: #2f3640;
+  --dark-color: #1e272e;
+  --darker-color: #171e24;
+  --light-color: #f5f6fa;
+  --gray-color: #7f8fa6;
+  --success-color: #4cd137;
+  --danger-color: #e84118;
+  --warning-color: #fbc531;
+  color: var(--light-color);
+
 
 }
 
-.proizvodi-pretraga {
-  padding: 10px;
-  font-size: 16px;
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-bottom: 20px;
+.proizvodi-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  animation: fadeIn 0.8s ease-out;
 }
 
-.sortiranje-container {
+.proizvodi-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.proizvodi-subtitle {
+  font-size: 1.1rem;
+  color: var(--gray-color);
+}
+
+.search-filter-container {
   display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 20px;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  animation: slideUp 0.6s ease-out;
 }
 
-.sortiraj-btn {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
-  border: white 1px solid;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.search-box {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-.sortiraj-btn:hover {
-  border: black 1px solid;
-  background-color: transparent;
+.search-box input {
+  width: 100%;
+  padding: 0.8rem 1.2rem;
+  padding-left: 3rem;
+  border-radius: 30px;
+  border: none;
+  background-color: var(--secondary-color);
+  color: var(--light-color);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.proizvodi-lista {
+.search-box input:focus {
+  outline: none;
+  box-shadow: 0 4px 20px rgba(0, 168, 255, 0.3);
+}
+
+.search-box i {
+  position: absolute;
+  left: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray-color);
+}
+
+.category-filter {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
   justify-content: center;
+  gap: 0.8rem;
 }
 
-.proizvod-kartica {
-  width: calc(33.333% - 20px);
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+.category-btn {
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  border: none;
+  background-color: var(--secondary-color);
+  color: var(--light-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.category-btn:hover {
+  background-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.category-btn.active {
+  background-color: var(--primary-color);
+  font-weight: 600;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  gap: 1rem;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s linear infinite;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.no-results {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.proizvod-kartica:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+.no-results i {
+  font-size: 3rem;
+  color: var(--warning-color);
 }
 
-.proizvod-slika {
-  width: 60%;
-  height: 200px;
+.product-card {
+  background-color: var(--secondary-color);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.product-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 168, 255, 0.2);
+}
+
+.product-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: var(--danger-color);
+  color: white;
+  padding: 0.3rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  z-index: 1;
+}
+
+.product-image-container {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  transition: transform 0.5s ease;
 }
 
-.proizvod-ime {
-  margin: 10px 0;
-  font-size: 20px;
-  color: #333;
-  font-weight: bold;
+.product-card:hover .product-image {
+  transform: scale(1.05);
 }
 
-.proizvod-opis {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 15px;
+.product-platforms {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  display: flex;
+  gap: 0.5rem;
 }
 
-.proizvod-cena {
-  font-size: 18px;
-  color: #e74c3c;
-  font-weight: bold;
-  margin-bottom: 10px;
+.platform-icon {
+  background-color: rgba(0, 0, 0, 0.7);
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+
+.platform-icon.pc {
+  color: #00a8ff;
+}
+
+.platform-icon.ps5 {
+  color: #006fcd;
+}
+
+.platform-icon.xbox {
+  color: #107c10;
+}
+
+.product-info {
+  padding: 1.2rem;
+}
+
+.product-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-description {
+  font-size: 0.85rem;
+  color: var(--gray-color);
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-price-container {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.product-price-old {
+  font-size: 0.9rem;
+  color: var(--gray-color);
+  text-decoration: line-through;
+}
+
+.product-price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.add-to-cart-btn {
+  width: 100%;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #0097e6;
+  transform: translateY(-2px);
+}
+
+/* Add these to your existing Proizvodi.css */
+
+.product-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .proizvod-vise-btn,
 .proizvod-dodaj-btn,
 .proizvod-izbaci-btn {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
+  flex: 1;
+  padding: 0.5rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 5px;
+  font-size: 0.8rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-bottom: 10px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
 }
 
 .proizvod-vise-btn {
-  background-color: #007bff;
-  color: #fff;
-}
-
-.proizvod-vise-btn:hover {
-  background-color: #0056b3;
+  background-color: var(--secondary-color);
+  color: var(--light-color);
+  border: 1px solid var(--gray-color);
 }
 
 .proizvod-dodaj-btn {
-  background-color: #28a745;
-  color: #fff;
-}
-
-.proizvod-dodaj-btn:hover {
-  background-color: #218838;
+  background-color: var(--success-color);
+  color: white;
 }
 
 .proizvod-izbaci-btn {
-  background-color: #dc3545;
-  color: #fff;
+  background-color: var(--danger-color);
+  color: white;
 }
 
-.proizvod-izbaci-btn:hover {
-  background-color: #c82333;
+.product-card.in-cart {
+  border: 2px solid var(--success-color);
 }
 
-/* Korpa - sidebar */
-.korpa-container-proizvod {
-  width: 300px;
+.floating-cart-btn {
   position: fixed;
-  right: 0;
-  top: 0;
-  background-color: #fff;
-  height: 80vh;
-  padding: 20px;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
   display: flex;
-  flex-direction: column;
-}
-
-.korpa-container-proizvod h5 {
-  margin-bottom: 20px;
-  font-size: 18px;
-  text-align: center;
-  color: #333;
-}
-
-.korpa-container-proizvod ul {
-  list-style-type: none;
-  padding-left: 0;
-  flex-grow: 1;
-  overflow-y: auto;
-}
-
-.korpa-container-proizvod li {
-  margin-bottom: 10px;
-  font-size: 16px;
-  color: #665;
-}
-
-.idi-u-korpu-btn {
-  padding: 12px;
-  font-size: 16px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 20px;
-  align-self: center;
+  box-shadow: 0 4px 20px rgba(0, 168, 255, 0.3);
+  transition: all 0.3s ease;
+  z-index: 100;
 }
 
-.idi-u-korpu-btn:hover {
-  background-color: #0056b3;
+.floating-cart-btn:hover {
+  transform: scale(1.1);
 }
 
-/* Responsive dizajn */
-@media (max-width: 992px) {
-  .proizvod-kartica {
-      width: calc(50% - 20px);
+.cart-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: var(--danger-color);
+  color: white;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-  .proizvod-kartica {
-      width: calc(100% - 20px);
+  .proizvodi-container {
+    padding: 1rem;
   }
-
-  .sortiranje-container {
-      flex-direction: column;
-      gap: 10px;
+  
+  .proizvodi-title {
+    font-size: 2rem;
   }
-
-  .korpa-container-proizvod {
-      width: 100%;
-      height: auto;
-      box-shadow: none;
-      position: static;
+  
+  .search-filter-container {
+    gap: 1rem;
+  }
+  
+  .category-filter {
+    gap: 0.5rem;
+  }
+  
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
-  .proizvodi-pretraga,
-  .sortiraj-btn,
-  .idi-u-korpu-btn {
-      width: 100%;
+  .proizvodi-title {
+    font-size: 1.8rem;
+  }
+  
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .category-filter {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+  
+  .category-filter::-webkit-scrollbar {
+    height: 5px;
+  }
+  
+  .category-filter::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 5px;
   }
 }

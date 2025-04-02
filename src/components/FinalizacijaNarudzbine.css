@@ -1,57 +1,121 @@
-/* Osnovni stilovi za finalizaciju narudžbine */
+/* FinalizacijaNarudzbine.css */
 .finalizacija-narudzbine-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: "Bai Jamjuree", sans-serif;
-
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 12px;
+    background-color: #1e1e1e;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    color: #e0e0e0;
+    animation: fadeIn 0.5s ease-out;
 }
 
 .finalizacija-narudzbine-container h1 {
+    color: #ffffff;
     font-size: 2rem;
-    margin-bottom: 20px;
-    color: #333;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #333;
 }
 
 .finalizacija-narudzbine-container h2 {
+    color: #646cff;
     font-size: 1.5rem;
-    margin-bottom: 15px;
-    color: #444;
+    margin: 1.5rem 0 1rem;
 }
 
 .finalizacija-narudzbine-container p {
-    font-size: 1rem;
-    margin-bottom: 10px;
-    color: #666;
+    margin: 0.8rem 0;
+    font-size: 1.1rem;
+    line-height: 1.6;
 }
 
 .finalizacija-narudzbine-container ul {
     list-style-type: none;
     padding: 0;
+    margin: 1.5rem 0;
 }
 
 .finalizacija-narudzbine-container li {
-    font-size: 1rem;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.8rem;
+    background-color: #2d2d2d;
+    border-radius: 8px;
+    border-left: 4px solid #646cff;
+    transition: transform 0.2s ease;
+}
+
+.finalizacija-narudzbine-container li:hover {
+    transform: translateX(5px);
 }
 
 .finalizacija-narudzbine-container button {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 1rem;
-    color: #fff;
-    background-color: #007bff;
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: 2rem auto 0;
+    padding: 1rem;
+    background-color: #646cff;
+    color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
     cursor: pointer;
-    margin-top: 20px;
+    transition: all 0.3s ease;
 }
 
 .finalizacija-narudzbine-container button:hover {
-    background-color: #0056b3;
+    background-color: #535bf2;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(100, 108, 255, 0.3);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .finalizacija-narudzbine-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .finalizacija-narudzbine-container h1 {
+        font-size: 1.7rem;
+    }
+    
+    .finalizacija-narudzbine-container h2 {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .finalizacija-narudzbine-container {
+        padding: 1rem;
+    }
+    
+    .finalizacija-narudzbine-container h1 {
+        font-size: 1.5rem;
+    }
+    
+    .finalizacija-narudzbine-container p,
+    .finalizacija-narudzbine-container li {
+        font-size: 1rem;
+    }
+    
+    .finalizacija-narudzbine-container button {
+        padding: 0.8rem;
+        font-size: 1rem;
+    }
+}
+
+/* Loading state */
+.finalizacija-narudzbine-container > p {
+    text-align: center;
+    color: #888;
+    font-style: italic;
 }

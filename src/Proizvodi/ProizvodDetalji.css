@@ -1,53 +1,549 @@
-/* src/components/ProizvodDetalji.css */
-.proizvod-detalji-container {
-    max-width: 400px;
-    margin: 10% auto;
-    padding: 20px;
-    text-align: center;
-    background-color: #f8f9fa;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-    
-}
-
-.proizvod-slika {
-    max-width: 100%;
+.proizvod-detail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    min-height: 100vh;
+  }
+  
+  .proizvod-breadcrumb {
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .proizvod-breadcrumb span {
+    cursor: pointer;
+  }
+  
+  .proizvod-breadcrumb span:hover {
+    color: #00a8ff;
+  }
+  
+  .proizvod-breadcrumb .proizvod-current {
+    color: #00a8ff;
+    cursor: default;
+  }
+  
+  .proizvod-detail-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .proizvod-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .proizvod-main-image-container {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .proizvod-main-image {
+    width: 100%;
     height: auto;
-    margin-bottom: 20px;
-}
-
-.proizvod-ime {
-    font-size: 2em;
-    margin-bottom: 10px;
-}
-
-.proizvod-opis,
-.proizvod-cena {
-    font-size: 1.2em;
-    margin-bottom: 20px;
-}
-
-.dodaj-u-korpu-button {
-    background-color: #28a745;
+    display: block;
+  }
+  
+  .proizvod-main-image:hover {
+    transform: scale(1.02);
+  }
+  
+  .proizvod-info {
+    padding: 0 1rem;
+  }
+  
+  .proizvod-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .proizvod-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
     color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    margin-right: 10px;
-}
-
-.dodaj-u-korpu-button:hover {
-    background-color: #218838;
-}
-
-.nazad-button {
-    background-color: #007bff;
+  }
+  
+  .proizvod-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .proizvod-category {
+    background-color: #2f3640;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
     color: white;
-    padding: 10px 20px;
+  }
+  
+  .proizvod-rating {
+    display: flex;
+    gap: 0.2rem;
+  }
+  
+  .proizvod-star {
+    font-size: 1rem;
+    color: #7f8fa6;
+  }
+  
+  .proizvod-star-filled {
+    color: #fbc531;
+  }
+  
+  .proizvod-description {
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    color: white;
+  }
+  
+  .proizvod-description h3 {
+    margin-bottom: 0.8rem;
+    font-size: 1.2rem;
+    color: #00a8ff;
+  }
+  
+  .proizvod-specs {
+    margin-bottom: 2rem;
+  }
+  
+  .proizvod-specs h3 {
+    margin-bottom: 0.8rem;
+    font-size: 1.2rem;
+    color: #00a8ff;
+  }
+  
+  .proizvod-specs ul {
+    list-style: none;
+  }
+  
+  .proizvod-specs li {
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #2f3640;
+  }
+  
+  .proizvod-specs li strong {
+    color: #00a8ff;
+  }
+  
+  .proizvod-actions {
+    background-color: #2f3640;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    position: sticky;
+    top: 1rem;
+  }
+  
+  .proizvod-price-container {
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  
+  .proizvod-current-price {
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .proizvod-old-price {
+    font-size: 1.2rem;
+    text-decoration: line-through;
+    color: #7f8fa6;
+    margin-bottom: 0.5rem;
+  }
+  
+  .proizvod-discount-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #e84118;
+    color: white;
+    padding: 0.3rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+  
+  .proizvod-quantity-selector {
+    margin-bottom: 1.5rem;
+  }
+  
+  .proizvod-quantity-selector label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: white;
+  }
+  
+  .proizvod-quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+  }
+  
+  .proizvod-quantity-controls button {
+    background-color: #1e272e;
+    color: #f5f6fa;
     border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .proizvod-quantity-controls button:hover {
+    background-color: #00a8ff;
+  }
+  
+  .proizvod-quantity-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .proizvod-quantity-controls span {
+    width: 40px;
+    text-align: center;
+  }
+  
+  .proizvod-action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .proizvod-add-to-cart-btn, .proizvod-wishlist-btn {
+    padding: 0.8rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .proizvod-add-to-cart-btn {
+    background-color: #00a8ff;
+    color: white;
+  }
+  
+  .proizvod-add-to-cart-btn:hover {
+    background-color: #0097e6;
+  }
+  
+  .proizvod-wishlist-btn {
+    background-color: #1e272e;
+    color: #f5f6fa;
+    border: 1px solid #7f8fa6;
+  }
+  
+  .proizvod-wishlist-btn:hover {
+    background-color: #2f3640;
+  }
+  
+  .proizvod-wishlist-btn.proizvod-in-wishlist {
+    background-color: #e84118;
+    color: white;
+    border-color: #e84118;
+  }
+  
+  .proizvod-stock {
+    font-size: 0.9rem;
+  }
+  
+  .proizvod-stock-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .proizvod-in-stock {
+    color: #4cd137;
+    font-weight: bold;
+  }
+
+  .proizvod-na-stanju {
+    color: white;
+  }
+  
+  .proizvod-out-of-stock {
+    color: #e84118;
+    font-weight: bold;
+  }
+  
+  .proizvod-back-button {
+    background-color: #2f3640;
+    color: #f5f6fa;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .proizvod-back-button:hover {
+    background-color: #1e272e;
+  }
+  
+  .proizvod-not-found-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .proizvod-not-found-container h2 {
+    margin-bottom: 1.5rem;
+    color: #e84118;
+  }
+  
+  @media (max-width: 992px) {
+    .proizvod-detail-content {
+      grid-template-columns: 1fr 1fr;
+    }
+    
+    .proizvod-info {
+      grid-column: span 2;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .proizvod-detail-content {
+      grid-template-columns: 1fr;
+    }
+    
+    .proizvod-info {
+      grid-column: span 1;
+    }
+    
+    .proizvod-actions {
+      position: static;
+    }
+  }
+  
+  /* Dodaj na postojeći ProizvodDetalji.css */
+
+/* --- Stilovi za Recenzije --- */
+.proizvod-recenzije-container {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #2f3640; /* Linija razdvajanja */
+}
+
+.proizvod-recenzije-container h2 {
+  margin-bottom: 1.5rem;
+  color: white; /* Ili tvoja primarna boja teksta */
+  font-size: 1.5rem;
+}
+
+/* Sekcija za dodavanje recenzije */
+.dodaj-recenziju-section {
+  background-color: #2f3640; /* Tamnija pozadina */
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.dodaj-recenziju-section h3 {
+  color: #00a8ff; /* Akcentna boja */
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.recenzija-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.recenzija-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #f5f6fa; /* Svetlija boja teksta */
+}
+
+/* Stil za interaktivne zvezdice u formi */
+.proizvod-rating.interactive .interactive-star {
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+.proizvod-rating.interactive .interactive-star:hover {
+  color: #fbc531; /* Boja zvezdice na hover */
+}
+
+.clear-rating-btn {
+    background: none;
+    border: none;
+    color: #7f8fa6;
+    cursor: pointer;
+    font-size: 0.8em;
+    margin-left: 0.5rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.clear-rating-btn:hover {
+    background-color: #1e272e;
+    color: #f5f6fa;
+}
+
+
+.recenzija-form textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 5px;
+  border: 1px solid #7f8fa6; /* Siva ivica */
+  background-color: #1e272e; /* Tamna pozadina inputa */
+  color: #f5f6fa; /* Svetli tekst */
+  font-size: 1rem;
+  min-height: 80px; /* Minimalna visina */
+  resize: vertical; /* Dozvoli samo vertikalno menjanje veličine */
+}
+
+.recenzija-form textarea:focus {
+  outline: none;
+  border-color: #00a8ff; /* Akcentna boja na fokus */
+  box-shadow: 0 0 0 2px rgba(0, 168, 255, 0.3);
+}
+
+.submit-recenzija-btn {
+  padding: 0.8rem 1.5rem;
+  background-color: #00a8ff; /* Akcentna boja */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.submit-recenzija-btn:hover {
+  background-color: #0097e6; /* Tamnija akcentna boja */
+}
+
+.submit-recenzija-btn:disabled {
+  background-color: #7f8fa6; /* Siva kad je onemogućeno */
+  cursor: not-allowed;
+}
+
+/* Lista recenzija */
+.recenzije-lista {
+  margin-top: 2rem;
+}
+
+.recenzija-item {
+  background-color: #1e272e; /* Malo svetlija tamna pozadina za svaku recenziju */
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border: 1px solid #2f3640;
+}
+
+.recenzija-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem; /* Razmak između avatara, meta i zvezdica */
+  flex-wrap: wrap; /* Omogućava prelamanje na manjim ekranima */
+}
+
+.recenzija-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover; /* Osigurava da slika lepo popuni krug */
+  border: 2px solid #00a8ff; /* Okvir oko avatara */
+}
+
+.recenzija-meta {
+   display: flex;
+   flex-direction: column;
+   flex-grow: 1; /* Da zauzme dostupan prostor */
+}
+
+.recenzija-korisnik {
+  font-weight: bold;
+  color: #f5f6fa;
+  font-size: 1rem;
+}
+
+.recenzija-datum {
+  font-size: 0.8rem;
+  color: #7f8fa6; /* Siva boja za datum */
+}
+
+/* Poravnaj zvezdice desno unutar hedera */
+.recenzija-header .proizvod-rating {
+  margin-left: auto; /* Gura zvezdice udesno */
+}
+
+.recenzija-tekst {
+  line-height: 1.6;
+  color: #ced6e0; /* Malo svetlija siva za tekst recenzije */
+  margin-top: 0.5rem; /* Mali razmak od headera ako postoji tekst */
+  white-space: pre-wrap; /* Čuva prelome redova iz textarea */
+}
+
+
+/* Poruke za greške i informacije */
+.error-message {
+    color: #e84118; /* Crvena za greške */
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.info-message {
+    color: #7f8fa6; /* Siva za informativne poruke */
+    margin-bottom: 1.5rem;
+    background-color: #2f3640;
+    padding: 0.8rem;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.login-link {
+    color: #00a8ff;
+    text-decoration: underline;
     cursor: pointer;
 }
 
-.nazad-button:hover {
-    background-color: #0056b3;
+/* Dodaj stil za prikaz broja recenzija pored zvezdica u headeru proizvoda */
+.proizvod-meta .proizvod-review-count {
+    font-size: 0.9rem;
+    color: #7f8fa6;
+    margin-left: 0.5rem; /* Mali razmak od zvezdica */
+}
+
+/* Responsive prilagođavanja ako su potrebna */
+@media (max-width: 768px) {
+    .recenzija-header {
+        gap: 0.5rem; /* Smanji razmak na manjim ekranima */
+    }
+    .recenzija-header .proizvod-rating {
+      margin-left: 0; /* Ukloni guranje udesno */
+      margin-top: 0.5rem; /* Dodaj malo razmaka iznad */
+      width: 100%; /* Neka zvezdice zauzmu celu širinu ispod meta podataka */
+      justify-content: flex-start; /* Poravnaj zvezdice levo */
+    }
+
 }

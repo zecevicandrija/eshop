@@ -1,91 +1,119 @@
-import React, { useState } from 'react';
-import { useAuth } from './auth';
-import {
-  MDBBtn,
-  MDBContainer,
-  MDBCard,
-  MDBCardBody,
-  MDBCol,
-  MDBRow,
-  MDBInput,
-  MDBModal,
-  MDBModalHeader,
-  MDBModalBody,
-  MDBModalFooter
-} from 'mdb-react-ui-kit';
-import 'mdb-react-ui-kit/dist/css/mdb.min.css';
+import React, { useState } from "react";
+import { useAuth } from "./auth.js";
+import { useNavigate } from "react-router-dom";
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import "./LoginPage.css";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [sifra, setSifra] = useState('');
-  const [showModal, setShowModal] = useState(false); // State za prikaz modala
-  const { login } = useAuth();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const { login, googleLogin  } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await login(email, sifra);
+      await login(username, password);
+      navigate("/profil");
     } catch (error) {
-      setShowModal(true); // Prikazivanje modala u slučaju greške
-      console.error('Login error:', error);
+      setErrorMessage("Invalid login credentials. Please try again.");
+      console.error("Login error:", error);
     }
   };
 
-  const closeModal = () => {
-    setShowModal(false); // Funkcija za zatvaranje modala
+  const handleSignUp = () => {
+    navigate("/signup");
+  };
+
+  // Funkcija koja se poziva kada Google login uspe
+  const handleGoogleSuccess = async (response) => {
+    try {
+      // Koristimo originalni Google token (response.credential)
+      await googleLogin(response.credential);
+      navigate("/profil");
+    } catch (error) {
+      console.error("Greška pri Google prijavi:", error);
+      setErrorMessage(error.message || "Greška pri Google prijavi.");
+    }
+  };
+
+  // Funkcija koja se poziva ako Google login ne uspe
+  const handleGoogleFailure = (error) => {
+    console.error("Google login nije uspeo:", error);
+    setErrorMessage("Google prijava nije uspela. Pokušaj ponovo.");
   };
 
   return (
-    <MDBContainer fluid>
-      <div className="p-5 bg-image" style={{ backgroundImage: 'url(https://undovrbas.com/static/media/logoundo.05cb548dd95412eff4cb.jpg)', height: '300px' }}></div>
-
-      <MDBCard className='mx-5 mb-5 p-5 shadow-5' style={{ marginTop: '-100px', background: 'hsla(0, 0%, 100%, 0.8)', backdropFilter: 'blur(30px)' }}>
-        <MDBCardBody className='p-5 text-center'>
-
-          <h2 className="fw-bold mb-5">Login</h2>
-
+    <div className="login-container">
+      <div className="login-content">
+        {/* Left section */}
+        <div className="login-image">
+          <div className="image-text">
+            <h1>Join the largest art community in the world!</h1>
+          </div>
+        </div>
+        {/* <h1 className="meksikoheader">MEKSIKO</h1> */}
+        {/* Right section */}
+        <div className="login-form">
+          <h2>Log In</h2>
           <form onSubmit={handleSubmit}>
-            <MDBRow>
-              <MDBCol col='12'>
-                <MDBInput
-                  wrapperClass='mb-4'
-                  label='Email'
-                  id='form1'
-                  type='email'
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </MDBCol>
-            </MDBRow>
-
-            <MDBInput
-              wrapperClass='mb-4'
-              label='Password'
-              id='form2'
-              type='password'
-              value={sifra}
-              onChange={(e) => setSifra(e.target.value)}
-              required
-            />
-
-            <MDBBtn className='w-100 mb-4' size='md' type="submit">Login</MDBBtn>
+            <div className="form-group">
+              <label>Mail Adresa</label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Lozinka</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-actions">
+              <button type="submit" className="primary-button">
+                Uloguj se
+              </button>
+              <p className="small-text">
+                Zaboravili ste lozinku? <a href="#">Promeni.</a>
+              </p>
+            </div>
           </form>
 
-        </MDBCardBody>
-      </MDBCard>
+          <div className="social-login">
+            <p>ili</p>
+            <div className="social-buttons">
+              {/* Google OAuth Provider sa tvojim Client ID-om */}
+              <GoogleOAuthProvider clientId='885612842021-gjcbruahl4h33qd6rfm7i5g00nq03v0v.apps.googleusercontent.com' redirectUri='http://localhost:3000'>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleFailure}
+                  text="signin_with" // Tekst na dugmetu: "Sign in with Google"
+                />
+              </GoogleOAuthProvider>
+              {/* <button className="social-btn apple-btn">Nastavite sa Apple</button> */}
+            </div>
+          </div>
 
-      {/* Modal za prikaz greške */}
-      <MDBModal tabIndex='-1' show={showModal} getOpenState={(isOpen) => setShowModal(isOpen)} centered>
-        <MDBModalHeader>Zatražena prijava nije uspjela</MDBModalHeader>
-        <MDBModalBody>
-          Molimo provjerite vaše korisničke podatke i pokušajte ponovo.
-        </MDBModalBody>
-        <MDBModalFooter>
-          <MDBBtn color='secondary' onClick={closeModal}>Zatvori</MDBBtn>
-        </MDBModalFooter>
-      </MDBModal>
-    </MDBContainer>
+          <div className="signup-section">
+            <p>
+              Nemate nalog?{" "}
+              <button onClick={handleSignUp} className="signup-link">
+                Registrujte se
+              </button>
+            </p>
+          </div>
+
+          {errorMessage && <div className="error-message">{errorMessage}</div>}
+        </div>
+      </div>
+    </div>
   );
 };
 

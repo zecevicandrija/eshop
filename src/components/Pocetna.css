@@ -1,14 +1,8 @@
 /* Global Styles */
-body {
-  color: #ffffff; /* White text */
-  font-family: "Bai Jamjuree", sans-serif;
-  margin: 0;
-  padding: 0;
-}
 
 .pocetna {
   background-color: #282828;
-  height: 100vh;
+  overflow-x: hidden;
 }
 
 /* Header Styles */
@@ -101,7 +95,8 @@ body {
 /* Hero Banner Styles */
 .hero-banner {
   position: relative;
-  height: 50vh;
+  height: calc(60vh + 90px); /* 100vh + visina navbar-a */
+  margin-top: -90px;
   clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
 }
 
@@ -117,17 +112,18 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to right, rgba(0,0,0,0.7), transparent);
+  background: linear-gradient(to right, rgba(0,0,0,0.8), transparent);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-left: 50px;
+  padding-left: 200px;
 }
 
 .hero-title {
   font-size: 48px;
   font-weight: bold;
   color: white;
+  margin-top: 20px;
 }
 
 .hero-price {
@@ -182,6 +178,19 @@ body {
   width: 350px;
   flex-shrink: 0;
   position: relative;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Primjena efekta samo unutar game-image */
+.game-image video {
+  opacity: 0;
+  transform: scale(1);             
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.game-image:hover video {
+  opacity: 1;
+  transform: scale(1.1);
 }
 
 .game-image {
@@ -192,30 +201,25 @@ body {
   position: relative;
   width: 100%;
   cursor: pointer;
+  transition: opacity 0.3s ease-in-out;
 }
 
-.game-image:hover .image-hover {
-  scale: 1.2;
-}
-
-.image-hover {
+.game-image > * {
   position: absolute;
-  top: 40px;
-  right: -10px; /* Postavi skroz desno */
-  width: 150px;
-  height: 150px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  transition: 0.5s;
-  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  border-radius: 10px;
 }
 
-.image-hover:hover {
-  scale: 1.1;
-}
+
+
+
 
 .game-info {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .game-title {
@@ -322,7 +326,7 @@ body {
 /* Tablet breakpoint */
 @media (max-width: 1024px) {
   .hero-banner {
-    height: 40vh;
+    height: 50vh;
   }
 
   .hero-title {
@@ -364,6 +368,30 @@ body {
   transition: transform 0.3s ease;
 }
 
+/* Desktop stilovi (769px i više) */
+@media (min-width: 769px) {
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .feature-card {
+    background: #282828;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid #383838;
+  }
+
+  /* Sakrivamo poslednje tri kartice (duplikate) na desktopu */
+  .feature-card:nth-child(n+4) {
+    display: none;
+  }
+}
+
 /* Mobile Carousel Styles */
 @media (max-width: 768px) {
   .game-list {
@@ -402,30 +430,58 @@ body {
     transform: scale(1);
   }
 
-  .features-grid {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 20px;
-    margin: 0 -20px;
-    width: calc(100% + 40px);
+  .features-trust {
+    overflow-x: hidden;
+    position: relative;
   }
 
-  .features-grid::-webkit-scrollbar {
-    display: none;
+  .features-container {
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .features-grid {
+    display: flex;
+    animation: slide 20s linear infinite;
+    width: max-content;
+    gap: 20px;
+    padding-bottom: 20px;
+    position: relative;
   }
 
   .feature-card {
-    flex: 0 0 85%;
-    margin: 0 20px;
-    min-width: 85%;
+    flex: 0 0 85vw;
+    min-width: 85vw;
+    scroll-snap-align: start;
+    /* Remove margin: 0 15px; since gap handles spacing */
   }
 
-  .trustpilot-card {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
+  /* Updated animation for infinite loop */
+  @keyframes slide {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Gradient masks remain optional and unchanged */
+  .features-grid::before,
+  .features-grid::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 60px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .features-grid::before {
+    left: 0;
+    background: linear-gradient(90deg, #1A1A1A 30%, rgba(26,26,26,0));
+  }
+
+  .features-grid::after {
+    right: 0;
+    background: linear-gradient(270deg, #1A1A1A 30%, rgba(26,26,26,0));
   }
 
   .trustpilot-content {

@@ -12,52 +12,49 @@ import {
 const AuthContext = React.createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [showModal, setShowModal] = useState(false); // State za prikaz modala
-  const [modalMessage, setModalMessage] = useState(""); // Poruka koja će se prikazati u modalu
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null; // Postavi inicijalno stanje iz localStorage
+  });
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+    } else {
+      setUser(null); // Osiguraj da je user null ako nema podataka
     }
-  }, []);
+  }, []); // Prazan dependency array jer se ovo izvršava samo pri montiranju
 
   const login = async (email, sifra) => {
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        { email, sifra }
-      );
+      const response = await axios.post("http://localhost:5000/api/auth/login", { email, sifra });
       if (response.status === 200) {
         const loggedInUser = response.data.user;
         setUser(loggedInUser);
         localStorage.setItem("user", JSON.stringify(loggedInUser));
-        console.log("Login successful:", loggedInUser);
-        navigate("/");
+        navigate("/profil");
         return loggedInUser;
       } else {
-        setShowModal(true); // Prikaz modala za neuspešnu prijavu
-        setModalMessage(
-          "Neuspešna prijava. Proverite vaše korisničke podatke i pokušajte ponovo."
-        );
+        setShowModal(true);
+        setModalMessage("Neuspešna prijava. Proverite podatke.");
         console.error("Login failed:", response.data.message);
         return null;
       }
     } catch (error) {
-      setModalMessage(
-        "Došlo je do greške prilikom prijave. Molimo pokušajte ponovo kasnije."
-      );
-      setShowModal(true); // Prikaz modala za grešku pri prijavi
+      setModalMessage("Greška prilikom prijave. Pokušajte kasnije.");
+      setShowModal(true);
       console.error("Error logging in:", error);
-
       throw error;
     }
   };
 
   const closeModal = () => {
-    setShowModal(false); // Funkcija za zatvaranje modala
+    setShowModal(false);
   };
 
   const logout = () => {
@@ -65,12 +62,10 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
     navigate("/login");
   };
+
   const updateUser = async (userData) => {
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/update",
-        userData
-      );
+      const response = await axios.post("http://localhost:5000/api/auth/update", userData);
       if (response.status === 200) {
         const updatedUser = response.data.user;
         setUser(updatedUser);
@@ -79,14 +74,12 @@ export const AuthProvider = ({ children }) => {
         return updatedUser;
       } else {
         setShowModal(true);
-        setModalMessage("Neuspešno ažuriranje korisnika. Pokušajte ponovo.");
+        setModalMessage("Neuspešno ažuriranje korisnika.");
         console.error("Update failed:", response.data.message);
         return null;
       }
     } catch (error) {
-      setModalMessage(
-        "Došlo je do greške prilikom ažuriranja korisnika. Molimo pokušajte ponovo kasnije."
-      );
+      setModalMessage("Greška prilikom ažuriranja korisnika.");
       setShowModal(true);
       console.error("Error updating user:", error);
       throw error;
@@ -98,8 +91,6 @@ export const AuthProvider = ({ children }) => {
       <AuthContext.Provider value={{ user, login, logout, updateUser }}>
         {children}
       </AuthContext.Provider>
-
-      {/* Modal za prikaz greške */}
       <MDBModal
         tabIndex="-1"
         show={showModal}

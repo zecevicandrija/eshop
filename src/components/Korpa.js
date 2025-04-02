@@ -1,8 +1,15 @@
-// src/Korpa.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Korpa.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faTrashAlt,
+  faArrowLeft,
+  faTicketAlt,
+  faShoppingCart,
+  faCreditCard
+} from "@fortawesome/free-solid-svg-icons";
 
 const Korpa = ({ korpa, ukloniIzKorpe, isprazniKorpu }) => {
   const [proizvodi, setProizvodi] = useState([]);
@@ -23,6 +30,7 @@ const Korpa = ({ korpa, ukloniIzKorpe, isprazniKorpu }) => {
           return {
             ...proizvod,
             dostupnaKolicina: dostupniProizvod ? dostupniProizvod.kolicina : 0,
+            slika: dostupniProizvod ? dostupniProizvod.slika : null
           };
         });
         setProizvodi(updatedProizvodi);
@@ -40,7 +48,6 @@ const Korpa = ({ korpa, ukloniIzKorpe, isprazniKorpu }) => {
   const handleRemove = (id) => {
     ukloniIzKorpe(id);
   };
-
 
   const handleIzabranaKolicina = (id, event) => {
     const novaKolicina = parseInt(event.target.value, 10);
@@ -87,74 +94,133 @@ const Korpa = ({ korpa, ukloniIzKorpe, isprazniKorpu }) => {
   }));
 
   return (
-    <div className="korpa-container">
-      <h1 className="korpa-header">Vaša Korpa</h1>
-      {proizvodi.length === 0 ? (
-        <p className="korpa-empty">Vaša korpa je prazna.</p>
-      ) : (
-        <>
-          <ul className="korpa-list">
-            {proizvodi.map((proizvod) => (
-              <li key={proizvod.id} className="korpa-item">
-                {proizvod.ime} - {proizvod.cena} RSD
-                <input
-                  type="number"
-                  min="1"
-                  max={proizvod.dostupnaKolicina}
-                  value={proizvod.kolicina}
-                  onChange={(event) =>
-                    handleIzabranaKolicina(proizvod.id, event)
-                  }
-                  className="korpa-quantity-input"
-                />
-                <button
-                  className="korpa-remove-button"
-                  onClick={() => handleRemove(proizvod.id)}
-                >
-                  Ukloni
-                </button>
-              </li>
-            ))}
-          </ul>
-          <div className="korpa-total">
-            <h2>Ukupna Cena: {ukupnaCena} RSD</h2>
-          </div>
-        </>
-      )}
-      <div className="korpa-discount">
-        <input
-          type="text"
-          value={discountCode}
-          onChange={(e) => setDiscountCode(e.target.value)}
-          placeholder="Unesite kod za popust"
-          className="korpa-discount-input"
-        />
-        <button
-          className="korpa-apply-discount-button"
-          onClick={handleDiscountCode}
-          disabled={loading}
-        >
-          {loading ? "Provera..." : "Primeni Popust"}
+    <div className="korpa-page-container">
+      <div className="korpa-header-container">
+        <button className="korpa-back-button" onClick={() => navigate(-1)}>
+          <FontAwesomeIcon icon={faArrowLeft} /> Nazad
         </button>
+        <h1 className="korpa-main-title">
+          <FontAwesomeIcon icon={faShoppingCart} /> Vaša Korpa
+        </h1>
       </div>
-      <div className="korpa-total">
-        <h2>Ukupna Cena sa Popustom: {ukupnaCenaSaPopustom.toFixed(2)} RSD</h2>
+
+      <div className="korpa-content-container">
+        <div className="korpa-items-section">
+          {proizvodi.length === 0 ? (
+            <div className="korpa-empty-message">
+              <h2>Vaša korpa je prazna</h2>
+              <p>Dodajte proizvode kako biste nastavili</p>
+              <button 
+                className="korpa-browse-button"
+                onClick={() => navigate('/proizvodi')}
+              >
+                Pregledaj proizvode
+              </button>
+            </div>
+          ) : (
+            <div className="korpa-items-list">
+              {proizvodi.map((proizvod) => (
+                <div key={proizvod.id} className="korpa-item-card">
+                  <div className="korpa-item-image-container">
+                    <img 
+                      src={proizvod.slika || 'default-image.png'} 
+                      alt={proizvod.ime} 
+                      className="korpa-item-image"
+                      onError={(e) => (e.target.src = 'default-image.png')}
+                    />
+                  </div>
+                  <div className="korpa-item-details">
+                    <h3 className="korpa-item-name">{proizvod.ime}</h3>
+                    <div className="korpa-item-price">{proizvod.cena} RSD</div>
+                    <div className="korpa-item-quantity-controls">
+                      <label>Količina:</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max={proizvod.dostupnaKolicina}
+                        value={proizvod.kolicina}
+                        onChange={(event) => handleIzabranaKolicina(proizvod.id, event)}
+                        className="korpa-quantity-input"
+                      />
+                    </div>
+                  </div>
+                  <div className="korpa-item-actions">
+                    <button
+                      className="korpa-remove-item-button"
+                      onClick={() => handleRemove(proizvod.id)}
+                    >
+                      <FontAwesomeIcon icon={faTrashAlt} /> Ukloni
+                    </button>
+                    <div className="korpa-item-total">
+                      {proizvod.cena * proizvod.kolicina} RSD
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {proizvodi.length > 0 && (
+          <div className="korpa-summary-section">
+            <div className="korpa-summary-card">
+              <h3 className="korpa-summary-title">Sažetak porudžbine</h3>
+              
+              <div className="korpa-discount-container">
+                <div className="korpa-discount-input-container">
+                  <FontAwesomeIcon icon={faTicketAlt} className="korpa-discount-icon" />
+                  <input
+                    type="text"
+                    value={discountCode}
+                    onChange={(e) => setDiscountCode(e.target.value)}
+                    placeholder="Unesite kod za popust"
+                    className="korpa-discount-input"
+                  />
+                </div>
+                <button
+                  className="korpa-apply-discount-button"
+                  onClick={handleDiscountCode}
+                  disabled={loading}
+                >
+                  {loading ? "Proveravam..." : "Primeni popust"}
+                </button>
+              </div>
+
+              <div className="korpa-total-container">
+                <div className="korpa-total-row">
+                  <span>Ukupna vrednost:</span>
+                  <span>{ukupnaCena} RSD</span>
+                </div>
+                {discountPercentage > 0 && (
+                  <div className="korpa-total-row korpa-discount-row">
+                    <span>Popust ({discountPercentage}%):</span>
+                    <span>-{(ukupnaCena * discountPercentage / 100).toFixed(2)} RSD</span>
+                  </div>
+                )}
+                <div className="korpa-total-row korpa-grand-total">
+                  <span>Ukupno za plaćanje:</span>
+                  <span>{ukupnaCenaSaPopustom.toFixed(2)} RSD</span>
+                </div>
+              </div>
+
+              <button
+                className="korpa-checkout-button"
+                onClick={() =>
+                  navigate("/checkout", {
+                    state: {
+                      proizvodi: formatProizvodi,
+                      ukupnaCena: ukupnaCena,
+                      ukupnaCenaSaPopustom,
+                    },
+                  })
+                }
+              >
+                <FontAwesomeIcon icon={faCreditCard} /> Nastavi na plaćanje
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-      <button
-        className="korpa-checkout-button"
-        onClick={() =>
-          navigate("/checkout", {
-            state: {
-              proizvodi: formatProizvodi,
-              ukupnaCena: ukupnaCena,
-              ukupnaCenaSaPopustom,
-            },
-          })
-        }
-        disabled={proizvodi.length === 0}
-      >
-        Nastavi na plaćanje
-      </button>
     </div>
   );
 };

@@ -1,145 +1,311 @@
-/* Korpa.css */
-
-.korpa-container {
-    max-width: 900px;
-    margin: 5% auto;
-    padding: 25px;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
-    font-family: "Bai Jamjuree", sans-serif;
-
-}
-
-.korpa-container:hover {
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-}
-
-.korpa-header {
-    text-align: center;
-    color: #222;
+.korpa-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .korpa-header-container {
+    display: flex;
+    align-items: center;
     margin-bottom: 30px;
-    font-size: 32px;
-    font-weight: bold;
-}
-
-.korpa-empty {
+  }
+  
+  .korpa-back-button {
+    background-color: #2f3640;
+    color: #f5f6fa;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+  
+  .korpa-back-button:hover {
+    background-color: #1e272e;
+  }
+  
+  .korpa-main-title {
+    margin-left: 20px;
+    font-size: 28px;
+    color: #00a8ff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .korpa-content-container {
+    display: flex;
+    gap: 30px;
+  }
+  
+  .korpa-items-section {
+    flex: 2;
+  }
+  
+  .korpa-summary-section {
+    flex: 1;
+  }
+  
+  .korpa-empty-message {
     text-align: center;
-    color: #888;
+    padding: 40px;
+    background-color: #2f3640;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .korpa-empty-message h2 {
+    color: #00a8ff;
+    margin-bottom: 10px;
+  }
+  
+  .korpa-empty-message p {
+    color: #7f8fa6;
+    margin-bottom: 20px;
+  }
+  
+  .korpa-browse-button {
+    background-color: #00a8ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .korpa-browse-button:hover {
+    background-color: #0097e6;
+  }
+  
+  .korpa-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .korpa-item-card {
+    display: flex;
+    background-color: #2f3640;
+    border-radius: 8px;
+    padding: 15px;
+    gap: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .korpa-item-image-container {
+    width: 120px;
+    height: 120px;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .korpa-item-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .korpa-item-details {
+    flex: 1;
+  }
+  
+  .korpa-item-name {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #f5f6fa;
+  }
+  
+  .korpa-item-price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #00a8ff;
+    margin-bottom: 15px;
+  }
+  
+  .korpa-item-quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .korpa-item-quantity-controls label {
+    font-size: 14px;
+    color: #7f8fa6;
+  }
+  
+  .korpa-quantity-input {
+    width: 60px;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #1e272e;
+    background-color: #1e272e;
+    color: #f5f6fa;
+    text-align: center;
+  }
+  
+  .korpa-item-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  
+  .korpa-remove-item-button {
+    background-color: #e84118;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .korpa-remove-item-button:hover {
+    background-color: #c23616;
+  }
+  
+  .korpa-item-total {
+    font-weight: bold;
+    color: #f5f6fa;
+  }
+  
+  .korpa-summary-card {
+    background-color: #2f3640;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 20px;
+  }
+  
+  .korpa-summary-title {
     font-size: 20px;
-}
-
-.korpa-list {
-    list-style: none;
-    padding: 0;
-}
-
-.korpa-item {
+    color: #00a8ff;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #1e272e;
+  }
+  
+  .korpa-discount-container {
+    margin-bottom: 20px;
+  }
+  
+  .korpa-discount-input-container {
+    position: relative;
+    margin-bottom: 10px;
+  }
+  
+  .korpa-discount-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #7f8fa6;
+  }
+  
+  .korpa-discount-input {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    border-radius: 5px;
+    border: 1px solid #1e272e;
+    background-color: #1e272e;
+    color: #f5f6fa;
+  }
+  
+  .korpa-apply-discount-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #00a8ff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .korpa-apply-discount-button:hover {
+    background-color: #0097e6;
+  }
+  
+  .korpa-apply-discount-button:disabled {
+    background-color: #7f8fa6;
+    cursor: not-allowed;
+  }
+  
+  .korpa-total-container {
+    margin: 20px 0;
+  }
+  
+  .korpa-total-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    margin-bottom: 15px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    transition: background-color 0.3s ease;
-}
-
-.korpa-item:hover {
-    background-color: #f1f1f1;
-}
-
-.korpa-remove-button {
-    padding: 10px 16px;
-    border: none;
-    border-radius: 6px;
-    background-color: #e74c3c;
-    color: #fff;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.korpa-remove-button:hover {
-    background-color: #c0392b;
-    transform: scale(1.05);
-}
-
-.korpa-quantity-input {
-    width: 60px;
-    padding: 8px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    text-align: center;
-    margin-right: 10px;
-}
-
-.korpa-discount {
-    margin-top: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.korpa-discount-input {
-    padding: 12px;
+    margin-bottom: 10px;
+    color: #f5f6fa;
+  }
+  
+  .korpa-discount-row {
+    color: #4cd137;
+  }
+  
+  .korpa-grand-total {
     font-size: 18px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    width: 250px;
-    margin-right: 10px;
-}
-
-.korpa-apply-discount-button {
-    padding: 12px 24px;
-    font-size: 18px;
-    background-color: #27ae60;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.korpa-apply-discount-button:disabled {
-    background-color: #7f8c8d;
-}
-
-.korpa-apply-discount-button:hover {
-    background-color: #2ecc71;
-}
-
-.korpa-total {
-    margin-top: 15px;
-    text-align: right;
-    font-size: 24px;
-    color: black;
     font-weight: bold;
-}
-
-.korpa-checkout-button {
-    display: block;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #1e272e;
+  }
+  
+  .korpa-checkout-button {
     width: 100%;
-    padding: 15px;
-    font-size: 20px;
-    background-color: #3498db;
+    padding: 12px;
+    background-color: #4cd137;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-top: 30px;
-}
-
-.korpa-checkout-button:disabled {
-    background-color: #bdc3c7;
-    cursor: not-allowed;
-}
-
-.korpa-checkout-button:hover:not(:disabled) {
-    background-color: #2980b9;
-    transform: scale(1.05);
-}
+    font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .korpa-checkout-button:hover {
+    background-color: #44bd32;
+  }
+  
+  @media (max-width: 992px) {
+    .korpa-content-container {
+      flex-direction: column;
+    }
+    
+    .korpa-summary-card {
+      position: static;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .korpa-item-card {
+      flex-direction: column;
+    }
+    
+    .korpa-item-image-container {
+      width: 100%;
+      height: 200px;
+    }
+    
+    .korpa-item-actions {
+      flex-direction: row;
+      align-items: center;
+      margin-top: 15px;
+    }
+  }
+  

@@ -1,0 +1,165 @@
+.container {
+    background-color: #282828;
+    min-height: 100vh;
+    padding: 2rem;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .card {
+    background: #383838;
+    max-width: 600px;
+    width: 100%;
+    padding: 2rem;
+    border-radius: 10px;
+    color: #ffffff;
+  }
+  
+  .header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .mainTitle {
+    font-size: 2.5rem;
+    color: #4CAF50;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+  
+  .subTitle {
+    font-size: 1.8rem;
+    color: #7f8c8d;
+    margin-bottom: 2rem;
+    font-weight: 400;
+  }
+  
+  .sectionDivider {
+    height: 1px;
+    background: #484848;
+    margin: 1.5rem 0;
+  }
+  
+  .formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .inputGroup {
+    margin-bottom: 1.5rem;
+  }
+  
+  .inputLabel {
+    display: block;
+    margin-bottom: 0.8rem;
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  
+  .inputField {
+    width: 100%;
+    padding: 1rem;
+    background: #484848;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 1rem;
+  }
+  
+  .inputField::placeholder {
+    color: #7f8c8d;
+    opacity: 0.8;
+  }
+  
+  .termsGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 2rem 0;
+  }
+  
+  .checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: #4CAF50;
+  }
+  
+  .termsLabel {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+  }
+  
+  .termsLink {
+    color: #4CAF50;
+    text-decoration: none;
+  }
+  
+  .submitButton {
+    width: 100%;
+    padding: 1.2rem;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .submitButton:hover {
+    background: #45a049;
+    transform: translateY(-1px);
+  }
+  
+  .backLink {
+    display: block;
+    text-align: center;
+    margin-top: 2rem;
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .card {
+        padding: 1.5rem;
+    }
+    
+    .formGrid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .mainTitle {
+        font-size: 2rem;
+    }
+    
+    .subTitle {
+        font-size: 1.5rem;
+    }
+  }
+  @media (max-height: 800px) {
+    .container {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+    
+    .card {
+        margin: 0.5rem 0;
+    }
+    
+    .header {
+        margin-bottom: 1rem;
+    }
+  }

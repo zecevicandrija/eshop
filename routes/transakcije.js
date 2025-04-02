@@ -1,82 +1,169 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db');
+const pool = require('../db');
 
-// Endpoint za dobavljanje svih transakcija
-router.get('/', (req, res) => {
-    const query = `
-        SELECT * FROM transakcije
-    `;
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error('Database error:', err);
-            return res.status(500).json({ error: 'Database error' });
-        }
-        res.status(200).json(results);
-    });
+// Dobavi sve transakcije
+router.get('/', async (req, res) => {
+  try {
+    const [transakcije] = await pool.query(`
+      SELECT id, ime, prezime, adresa, email, telefon, 
+             datum_transakcije, proizvodi 
+      FROM transakcije
+    `);
+
+    // Uklonite JSON.parse jer je proizvodi već parsiran objekat
+    const parsedTransactions = transakcije.map(t => ({
+      ...t,
+      proizvodi: t.proizvodi || [] // Ako je null, postavi na prazan niz
+    }));
+
+    res.status(200).json(parsedTransactions);
+  } catch (error) {
+    console.error('Greška u bazi:', error);
+    res.status(500).json({ error: 'Greška pri dobavljanju transakcija' });
+  }
 });
 
-// Endpoint za dodavanje nove transakcije
-router.post('/', (req, res) => {
-    const { ime, prezime, adresa, email, telefon, datum_transakcije, proizvodi } = req.body;
+// Dodaj novu transakciju
+router.post('/', async (req, res) => {
+  const { ime, prezime, adresa, email, telefon, datum_transakcije, proizvodi } = req.body;
 
+  try {
+    // Validacija obaveznih polja
     if (!ime || !prezime || !email || !datum_transakcije || !proizvodi) {
-        return res.status(400).json({ error: 'Missing required fields' });
+      return res.status(400).json({ error: 'Nedostaju obavezna polja' });
+    }
+    if (!Array.isArray(proizvodi)) {
+      return res.status(400).json({ error: 'Proizvodi moraju biti niz' });
     }
 
     const query = `
-        INSERT INTO transakcije (ime, prezime, adresa, email, telefon, datum_transakcije, proizvodi)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO transakcije 
+      (ime, prezime, adresa, email, telefon, datum_transakcije, proizvodi)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
 
-    const proizvodiJson = JSON.stringify(proizvodi);
-    console.log('Podaci za umetanje:', { ime, prezime, adresa, email, telefon, datum_transakcije, proizvodiJson });
+    const [result] = await pool.query(query, [
+      ime,
+      prezime,
+      adresa || null,
+      email,
+      telefon || null,
+      new Date(datum_transakcije),
+      JSON.stringify(proizvodi)
+    ]);
 
-    db.query(query, [ime, prezime, adresa, email, telefon, datum_transakcije, proizvodiJson], (err, results) => {
-        if (err) {
-            console.error('Database error:', err);
-            return res.status(500).json({ error: 'Database error' });
-        }
-        res.status(201).json({ message: 'Transaction added successfully', transactionId: results.insertId });
+    res.status(201).json({ 
+      message: 'Transakcija uspešno dodata',
+      transactionId: result.insertId
     });
+  } catch (error) {
+    console.error('Greška:', error);
+    if (error.code === 'ER_TRUNCATED_WRONG_VALUE') {
+      return res.status(400).json({ error: 'Nevalidan format datuma' });
+    }
+    res.status(500).json({ error: 'Greška pri dodavanju transakcije' });
+  }
 });
 
+// Ažuriraj transakciju
+router.put('/:id', async (req, res) => {
+  const transactionId = req.params.id;
+  const { ime, prezime, adresa, email, telefon, datum_transakcije, proizvodi } = req.body;
 
-// Endpoint za aÅ¾uriranje transakcije
-router.put('/:id', (req, res) => {
-    const transactionId = req.params.id;
-    const { ime, prezime, adresa, email, telefon, datum_transakcije, ukupna_cena, proizvodi } = req.body;
-
-    if (!ime || !prezime || !email || !datum_transakcije || !ukupna_cena || !proizvodi) {
-        return res.status(400).json({ error: 'Missing required fields' });
+  try {
+    // Validacija obaveznih polja
+    if (!ime || !prezime || !email || !datum_transakcije || !proizvodi) {
+      return res.status(400).json({ error: 'Nedostaju obavezna polja' });
     }
 
     const query = `
-        UPDATE transakcije 
-        SET ime = ?, prezime = ?, adresa = ?, email = ?, telefon = ?, datum_transakcije = ?, ukupna_cena = ?, proizvodi = ?
-        WHERE id = ?
+      UPDATE transakcije 
+      SET ime = ?, prezime = ?, adresa = ?, email = ?, telefon = ?, 
+          datum_transakcije = ?, proizvodi = ?
+      WHERE id = ?
     `;
-    db.query(query, [ime, prezime, adresa, email, telefon, datum_transakcije, ukupna_cena, JSON.stringify(proizvodi), transactionId], (err, results) => {
-        if (err) {
-            console.error('Database error:', err);
-            return res.status(500).json({ error: 'Database error' });
-        }
-        res.status(200).json({ message: `Transaction with ID ${transactionId} updated successfully` });
+
+    const [result] = await pool.query(query, [
+      ime,
+      prezime,
+      adresa || null,
+      email,
+      telefon || null,
+      new Date(datum_transakcije),
+      JSON.stringify(proizvodi),
+      transactionId
+    ]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Transakcija nije pronađena' });
+    }
+
+    res.status(200).json({ 
+      message: 'Transakcija uspešno ažurirana',
+      changes: result.changedRows
     });
+  } catch (error) {
+    console.error('Greška:', error);
+    if (error.code === 'ER_TRUNCATED_WRONG_VALUE') {
+      return res.status(400).json({ error: 'Nevalidan format datuma' });
+    }
+    res.status(500).json({ error: 'Greška pri ažuriranju transakcije' });
+  }
 });
 
-// Endpoint za brisanje transakcije
-router.delete('/:id', (req, res) => {
-    const transactionId = req.params.id;
-    const query = 'DELETE FROM transakcije WHERE id = ?';
-    db.query(query, [transactionId], (err, results) => {
-        if (err) {
-            console.error('Database error:', err);
-            return res.status(500).json({ error: 'Database error' });
-        }
-        res.status(200).json({ message: `Transaction with ID ${transactionId} deleted successfully` });
+// Obriši transakciju
+router.delete('/:id', async (req, res) => {
+  const transactionId = req.params.id;
+
+  try {
+    const [result] = await pool.query(
+      'DELETE FROM transakcije WHERE id = ?',
+      [transactionId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Transakcija nije pronađena' });
+    }
+
+    res.status(200).json({ 
+      message: 'Transakcija uspešno obrisana',
+      deletedId: transactionId
     });
+  } catch (error) {
+    console.error('Greška:', error);
+    res.status(500).json({ error: 'Greška pri brisanju transakcije' });
+  }
 });
 
-// Eksportuj ruter
+// Dobavi transakcije po emailu
+router.get('/by-email/:email', async (req, res) => {
+  const email = req.params.email;
+  
+  try {
+    const [transakcije] = await pool.query(
+      `SELECT id, datum_transakcije, proizvodi, status 
+       FROM transakcije 
+       WHERE email = ? 
+       ORDER BY datum_transakcije DESC`,
+      [email]
+    );
+
+    const parsedTransactions = transakcije.map(t => ({
+      ...t,
+      // Proveri tip podataka pre parsiranja
+      proizvodi: typeof t.proizvodi === 'string' ? JSON.parse(t.proizvodi) : t.proizvodi
+    }));
+
+    res.status(200).json(parsedTransactions);
+  } catch (error) {
+    console.error('Greška:', error);
+    res.status(500).json({ 
+      error: 'Greška pri dobavljanju transakcija',
+      details: error.message 
+    });
+  }
+});
+
+
 module.exports = router;

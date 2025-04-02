@@ -1,68 +1,111 @@
-// routes/popusti.js
 const express = require('express');
 const router = express.Router();
-const db = require('../db');
+const pool = require('../db'); // pool već vraća promise-based instancu
 
-// Endpoint za dobavljanje svih popusta
-router.get('/', (req, res) => {
-    const query = 'SELECT * FROM popusti';
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error('Database error:', err);
-            return res.status(500).json({ error: 'Database error' });
-        }
-        res.status(200).json(results);
-    });
+// Dobavi sve popuste
+router.get('/', async (req, res) => {
+  try {
+    const [popusti] = await pool.query(`
+      SELECT id, ime_popusta, procenat 
+      FROM popusti
+    `);
+    res.status(200).json(popusti);
+  } catch (error) {
+    console.error('Greška u bazi:', error);
+    res.status(500).json({ error: 'Greška pri dobavljanju popusta' });
+  }
 });
 
-// Endpoint za dodavanje novog popusta
-router.post('/', (req, res) => {
-    const { ime_popusta, procenat } = req.body;
+// Dodaj novi popust
+router.post('/', async (req, res) => {
+  const { ime_popusta, procenat } = req.body;
 
-    if (!ime_popusta || procenat === undefined) {
-        return res.status(400).json({ error: 'Missing required fields' });
+  if (!ime_popusta || procenat === undefined) {
+    return res
+      .status(400)
+      .json({ error: 'Obavezna polja su ime popusta i procenat' });
+  }
+
+  try {
+    const [result] = await pool.query(
+      'INSERT INTO popusti (ime_popusta, procenat) VALUES (?, ?)',
+      [ime_popusta, parseFloat(procenat)]
+    );
+
+    res.status(201).json({
+      message: 'Popust uspešno dodat',
+      discountId: result.insertId,
+      ime_popusta,
+      procenat: parseFloat(procenat)
+    });
+  } catch (error) {
+    console.error('Greška:', error);
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res
+        .status(409)
+        .json({ error: 'Popust sa ovim imenom već postoji' });
+    }
+    res.status(500).json({ error: 'Greška pri dodavanju popusta' });
+  }
+});
+
+// Ažuriraj postojeći popust
+router.put('/:id', async (req, res) => {
+  const discountId = req.params.id;
+  const { ime_popusta, procenat } = req.body;
+
+  if (!ime_popusta || procenat === undefined) {
+    return res
+      .status(400)
+      .json({ error: 'Obavezna polja su ime popusta i procenat' });
+  }
+
+  try {
+    const [result] = await pool.query(
+      'UPDATE popusti SET ime_popusta = ?, procenat = ? WHERE id = ?',
+      [ime_popusta, parseFloat(procenat), discountId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Popust nije pronađen' });
     }
 
-    const query = 'INSERT INTO popusti (ime_popusta, procenat) VALUES (?, ?)';
-    db.query(query, [ime_popusta, procenat], (err, results) => {
-        if (err) {
-            console.error('Database error:', err);
-            return res.status(500).json({ error: 'Database error' });
-        }
-        res.status(201).json({ message: 'Discount added successfully', discountId: results.insertId });
+    res.status(200).json({
+      message: 'Popust uspešno ažuriran',
+      changes: result.changedRows
     });
+  } catch (error) {
+    console.error('Greška:', error);
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res
+        .status(409)
+        .json({ error: 'Popust sa ovim imenom već postoji' });
+    }
+    res.status(500).json({ error: 'Greška pri ažuriranju popusta' });
+  }
 });
 
-// Endpoint za ažuriranje popusta
-router.put('/:id', (req, res) => {
-    const discountId = req.params.id;
-    const { ime_popusta, procenat } = req.body;
+// Obriši popust
+router.delete('/:id', async (req, res) => {
+  const discountId = req.params.id;
 
-    if (!ime_popusta || procenat === undefined) {
-        return res.status(400).json({ error: 'Missing required fields' });
+  try {
+    const [result] = await pool.query('DELETE FROM popusti WHERE id = ?', [
+      discountId
+    ]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Popust nije pronađen' });
     }
 
-    const query = 'UPDATE popusti SET ime_popusta = ?, procenat = ? WHERE id = ?';
-    db.query(query, [ime_popusta, procenat, discountId], (err, results) => {
-        if (err) {
-            console.error('Database error:', err);
-            return res.status(500).json({ error: 'Database error' });
-        }
-        res.status(200).json({ message: 'Discount updated successfully' });
+    res.status(200).json({
+      message: 'Popust uspešno obrisan',
+      deletedId: discountId
     });
-});
-
-// Endpoint za brisanje popusta
-router.delete('/:id', (req, res) => {
-    const discountId = req.params.id;
-    const query = 'DELETE FROM popusti WHERE id = ?';
-    db.query(query, [discountId], (err, results) => {
-        if (err) {
-            console.error('Database error:', err);
-            return res.status(500).json({ error: 'Database error' });
-        }
-        res.status(200).json({ message: `Discount with ID ${discountId} deleted successfully` });
-    });
+  } catch (error) {
+    console.error('Greška:', error);
+    res.status(500).json({ error: 'Greška pri brisanju popusta' });
+  }
 });
 
 module.exports = router;

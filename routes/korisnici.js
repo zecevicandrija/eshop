@@ -1,97 +1,169 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db');
+const pool = require('../db'); // pool je već promise-based iz db.js
 const bcrypt = require('bcryptjs');
+const cloudinary = require('cloudinary').v2;
+const multer = require('multer');
 
+// Konfiguracija za multer
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
-// Endpoint za dobavljanje svih korisnika
-router.get('/', (req, res) => {
-    const query = 'SELECT * FROM korisnici';
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error('Database error:', err);
-            return res.status(500).json({ error: 'Database error' });
-        }
-        res.status(200).json(results);
-    });
+// Dobavljanje svih korisnika
+router.get('/', async (req, res) => {
+  try {
+    const [users] = await pool.query(
+      'SELECT id, ime, prezime, email, uloga, telefon, adresa, profilna FROM korisnici'
+    );
+    res.status(200).json(users);
+  } catch (error) {
+    console.error('Greška pri dobavljanju korisnika:', error);
+    res.status(500).json({ error: 'Greška pri dobavljanju korisnika' });
+  }
 });
 
-// Endpoint za dodavanje novog korisnika
+// Dodavanje novog korisnika
 router.post('/', async (req, res) => {
-    const { ime, prezime, email, sifra, uloga, adresa, telefon } = req.body;
+  const { ime, prezime, email, sifra, uloga = 'korisnik', adresa, telefon } = req.body;
 
-    try {
-        if (!ime || !prezime || !email || !sifra || !uloga || !telefon || !adresa) {
-            return res.status(400).json({ error: 'Missing required fields' });
-        }
+  if (!ime || !prezime || !email || !sifra || !telefon || !adresa) {
+    return res.status(400).json({ error: 'Nedostaju obavezna polja' });
+  }
 
-        const hashedPassword = await bcrypt.hash(sifra, 10);
-        console.log('Hashed password:', hashedPassword);
-
-        const query = 'INSERT INTO korisnici (ime, prezime, email, sifra, uloga, adresa, telefon) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        db.query(query, [ime, prezime, email, hashedPassword, uloga, telefon, adresa], (err, results) => {
-            if (err) {
-                console.error('Database error:', err);
-                return res.status(500).json({ error: 'Database error' });
-            }
-            res.status(201).json({ message: 'User added successfully', userId: results.insertId });
-        });
-    } catch (error) {
-        console.error('Internal server error:', error);
-        res.status(500).json({ error: 'Internal server error' });
+  try {
+    // Provera da li email već postoji
+    const [existingUser] = await pool.query('SELECT id FROM korisnici WHERE email = ?', [email]);
+    if (existingUser.length > 0) {
+      return res.status(409).json({ error: 'Email adresa već postoji' });
     }
+
+    const hashedPassword = await bcrypt.hash(sifra, 10);
+
+    const [result] = await pool.query(
+      `INSERT INTO korisnici (ime, prezime, email, sifra, uloga, adresa, telefon) 
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [ime, prezime, email, hashedPassword, uloga, adresa, telefon]
+    );
+
+    res.status(201).json({ message: 'Korisnik uspešno dodat', userId: result.insertId });
+  } catch (error) {
+    console.error('Greška pri dodavanju korisnika:', error);
+    res.status(500).json({ error: 'Greška pri dodavanju korisnika' });
+  }
 });
-// Endpoint za ažuriranje korisnika
+
+// Ažuriranje korisnika
 router.put('/:id', async (req, res) => {
-    const userId = req.params.id;
-    const { ime, prezime, email, sifra, uloga, adresa, telefon } = req.body;
+  const userId = req.params.id;
+  const { ime, prezime, email, sifra, uloga, adresa, telefon } = req.body;
 
-    try {
-        // Provjera da li je potrebno ažurirati lozinku
-        let hashedPassword;
-        if (sifra) {
-            hashedPassword = await bcrypt.hash(sifra, 10);
-        }
-
-        // Priprema SQL upita
-        let query = 'UPDATE korisnici SET ime = ?, prezime = ?, email = ?, uloga = ?, adresa = ?, telefon = ?';
-        let queryParams = [ime, prezime, email, uloga, adresa, telefon];
-
-        // Ako je lozinka uključena u upit, dodajte je u SQL upit
-        if (sifra) {
-            query += ', sifra = ?';
-            queryParams.push(hashedPassword);
-        }
-
-        query += ' WHERE id = ?';
-        queryParams.push(userId);
-
-        // Izvršavanje SQL upita
-        db.query(query, queryParams, (err, results) => {
-            if (err) {
-                console.error('Database error:', err);
-                return res.status(500).json({ error: 'Database error' });
-            }
-            res.status(200).json({ message: `User with ID ${userId} updated successfully` });
-        });
-    } catch (error) {
-        console.error('Internal server error:', error);
-        res.status(500).json({ error: 'Internal server error' });
+  try {
+    // Provera da li korisnik postoji
+    const [existingUser] = await pool.query('SELECT id FROM korisnici WHERE id = ?', [userId]);
+    if (existingUser.length === 0) {
+      return res.status(404).json({ error: 'Korisnik nije pronađen' });
     }
+
+    let hashedPassword;
+    const updates = [];
+    const params = [];
+
+    if (ime) { updates.push('ime = ?'); params.push(ime); }
+    if (prezime) { updates.push('prezime = ?'); params.push(prezime); }
+    if (email) {
+      const [emailCheck] = await pool.query('SELECT id FROM korisnici WHERE email = ? AND id != ?', [email, userId]);
+      if (emailCheck.length > 0) {
+        return res.status(409).json({ error: 'Email adresa već postoji' });
+      }
+      updates.push('email = ?');
+      params.push(email);
+    }
+    if (uloga) { updates.push('uloga = ?'); params.push(uloga); }
+    if (adresa) { updates.push('adresa = ?'); params.push(adresa); }
+    if (telefon) { updates.push('telefon = ?'); params.push(telefon); }
+    if (sifra) {
+      hashedPassword = await bcrypt.hash(sifra, 10);
+      updates.push('sifra = ?');
+      params.push(hashedPassword);
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ error: 'Nema podataka za ažuriranje' });
+    }
+
+    params.push(userId);
+    const [result] = await pool.query(`UPDATE korisnici SET ${updates.join(', ')} WHERE id = ?`, params);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Korisnik nije pronađen' });
+    }
+
+    res.status(200).json({ message: `Korisnik #${userId} uspešno ažuriran` });
+  } catch (error) {
+    console.error('Greška pri ažuriranju korisnika:', error);
+    res.status(500).json({ error: 'Greška pri ažuriranju korisnika' });
+  }
 });
 
+// Brisanje korisnika
+router.delete('/:id', async (req, res) => {
+  const userId = req.params.id;
 
-// Endpoint za brisanje korisnika
-router.delete('/:id', (req, res) => {
-    const userId = req.params.id;
-    const query = 'DELETE FROM korisnici WHERE id = ?';
-    db.query(query, [userId], (err, results) => {
-        if (err) {
-            console.error('Database error:', err);
-            return res.status(500).json({ error: 'Database error' });
+  try {
+    const [result] = await pool.query('DELETE FROM korisnici WHERE id = ?', [userId]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Korisnik nije pronađen' });
+    }
+
+    res.status(200).json({ message: `Korisnik #${userId} uspešno obrisan` });
+  } catch (error) {
+    console.error('Greška pri brisanju korisnika:', error);
+    res.status(500).json({ error: 'Greška pri brisanju korisnika' });
+  }
+});
+
+// Upload profilne slike
+router.post('/upload-avatar/:id', upload.single('avatar'), async (req, res) => {
+  const userId = req.params.id;
+
+  if (!req.file) {
+    return res.status(400).json({ error: 'Nije poslata slika' });
+  }
+
+  const uploadStream = cloudinary.uploader.upload_stream(
+    {
+      folder: 'user_avatars',
+      public_id: `user_${userId}`,
+      overwrite: true,
+    },
+    async (error, result) => {
+      if (error) {
+        console.error('Cloudinary greška:', error);
+        return res.status(500).json({ error: 'Greška pri uploadu na Cloudinary' });
+      }
+
+      try {
+        const [updateResult] = await pool.query(
+          'UPDATE korisnici SET profilna = ? WHERE id = ?',
+          [result.secure_url, userId]
+        );
+
+        if (updateResult.affectedRows === 0) {
+          return res.status(404).json({ error: 'Korisnik nije pronađen' });
         }
-        res.status(200).json({ message: `User with ID ${userId} deleted successfully` });
-    });
+
+        res.json({ message: 'Avatar ažuriran', url: result.secure_url });
+      } catch (err) {
+        console.error('Greška pri update-u baze:', err);
+        res.status(500).json({ error: 'Greška u bazi podataka' });
+      }
+    }
+  );
+
+  // Pretvaranje buffer-a u stream i slanje na Cloudinary
+  const bufferStream = require('stream').Readable.from(req.file.buffer);
+  bufferStream.pipe(uploadStream);
 });
 
 module.exports = router;

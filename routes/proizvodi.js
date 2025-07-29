@@ -19,7 +19,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 router.get('/', async (req, res) => {
   try {
     const [proizvodi] = await pool.query(`
-      SELECT id, ime, opis, cena, slika, kolicina 
+      SELECT id, ime, opis, cena, slika, kolicina, payhip_link 
       FROM proizvodi
     `);
     res.status(200).json(proizvodi);
@@ -34,7 +34,7 @@ router.get('/:id', async (req, res) => {
   const productId = req.params.id;
   try {
     const [proizvod] = await pool.query(
-      `SELECT id, ime, opis, cena, slika, kolicina 
+      `SELECT id, ime, opis, cena, slika, kolicina, payhip_link 
        FROM proizvodi 
        WHERE id = ?`,
       [productId]
@@ -69,7 +69,7 @@ router.post('/', upload.single('slika'), async (req, res) => {
 
         // Unos proizvoda u bazu sa Cloudinary URL-om
         const [insertResult] = await pool.query(
-          `INSERT INTO proizvodi (ime, opis, cena, slika, kolicina) VALUES (?, ?, ?, ?, ?)`,
+          `INSERT INTO proizvodi (ime, opis, cena, slika, kolicina, payhip_link) VALUES (?, ?, ?, ?, ?, ?)`,
           [
             ime,
             opis || null,
@@ -101,7 +101,7 @@ router.post('/', upload.single('slika'), async (req, res) => {
 // Ažuriraj proizvod
 router.put('/:id', upload.single('slika'), async (req, res) => {
   const productId = req.params.id;
-  const { ime, opis, cena, kolicina } = req.body;
+  const { ime, opis, cena, kolicina, payhip_link } = req.body;
   let slikaUrl;
 
   try {
@@ -145,6 +145,10 @@ router.put('/:id', upload.single('slika'), async (req, res) => {
         updates.push('kolicina = ?');
         params.push(parseInt(kolicina));
       }
+      if (payhip_link) {
+        updates.push('payhip_link = ?');
+        params.push(payhip_link);
+      } 
       if (slikaUrl) {
         updates.push('slika = ?');
         params.push(slikaUrl);

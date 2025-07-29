@@ -10,12 +10,14 @@ const popustiRouter = require('./routes/popusti');
 const wishlistRouter = require('./routes/wishlist');
 const preporukeRouter = require('./routes/preporuke');
 const recenzijeRouter = require('./routes/recenzije');
+const affiliateRouter = require('./routes/affiliate');
+const paymentRouter = require('./routes/payment');
 
 require('dotenv').config(); // Učitavanje .env fajla
 const cloudinary = require('cloudinary').v2;
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3306;
 
 // Middleware
 app.use(cors());
@@ -49,6 +51,9 @@ app.use('/api/popusti', popustiRouter);
 app.use('/api/wishlist', wishlistRouter);
 app.use('/api/preporuke', preporukeRouter);
 app.use('/api/recenzije', recenzijeRouter);
+app.use('/api/affiliate', affiliateRouter);
+app.use('/api/payment', paymentRouter);
+
 
 // Start server
 app.listen(port, () => {

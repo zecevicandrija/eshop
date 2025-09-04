@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -13,11 +14,10 @@ const recenzijeRouter = require('./routes/recenzije');
 const affiliateRouter = require('./routes/affiliate');
 const paymentRouter = require('./routes/payment');
 
-require('dotenv').config(); // Učitavanje .env fajla
 const cloudinary = require('cloudinary').v2;
 
 const app = express();
-const port = process.env.PORT || 3306;
+const port = process.env.PORT || 4000;
 
 // Middleware
 app.use(cors());

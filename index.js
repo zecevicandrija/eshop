@@ -19,27 +19,41 @@ const cloudinary = require('cloudinary').v2;
 const app = express();
 const port = process.env.PORT || 4000;
 
-// CORS konfiguracija za Netlify frontend
-const corsOptions = {
-  origin: [
-    'https://balkankeys.netlify.app',
-    'http://localhost:3000',
-    'http://localhost:3001',
-    'https://balkankeys.netlify.app/',
-    'https://api.undovrbas.com',
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
-};
+// === MIDDLEWARE - PRVO CORS ===
 
-// Middleware
-app.use(cors(corsOptions));
+// 1. CORS KONFIGURACIJA (kao u radećem projektu)
+const allowedOrigins = [
+    'https://balkankeys.netlify.app',
+    'https://api.undovrbas.com',
+    'https://217.154.193.137',
+    'http://localhost:3000',
+    'http://localhost:3001'
+];
+
+app.use(cors({ 
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps, curl, etc)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+}));
+
+// 2. BODY PARSER (nakon CORS)
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Rukovanje preflight zahtevima
-app.options('*', cors(corsOptions));
+// 3. RUKOVANJE PREFLIGHT ZAHTEVIMA
+app.options('*', cors());
+
+// === OSTALA KONFIGURACIJA ===
 
 // Konfiguracija Cloudinary-ja
 cloudinary.config({
@@ -48,7 +62,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Provjera konekcije prema bazi koristeći async/await
+// Provjera konekcije prema bazi
 (async () => {
   try {
     const [rows] = await pool.query('SELECT 1');
@@ -99,7 +113,7 @@ app.use((error, req, res, next) => {
 // Start server
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server running on port ${port}`);
-  console.log(`CORS enabled for: ${corsOptions.origin.join(', ')}`);
+  console.log(`CORS enabled for: ${allowedOrigins.join(', ')}`);
 });
 
 module.exports = app;

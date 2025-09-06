@@ -57,6 +57,15 @@ cloudinary.config({
   }
 })();
 
+// Test ruta za proveru API-ja
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    message: 'Backend server is running!',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 // Routes
 app.use('/api/auth', authRouter);
 app.use('/api/korisnici', korisniciRouter);

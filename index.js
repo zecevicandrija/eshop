@@ -25,7 +25,8 @@ const corsOptions = {
     'https://balkankeys.netlify.app',
     'http://localhost:3000',
     'http://localhost:3001',
-    'https://balkankeys.netlify.app/'
+    'https://balkankeys.netlify.app/',
+    'https://api.undovrbas.com',
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
